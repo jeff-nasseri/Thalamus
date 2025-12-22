@@ -1,0 +1,8 @@
+src
+test
+infra
+    github
+    proxmox
+architecture
+docs
+articles
