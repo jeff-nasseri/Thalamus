@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        </value>
+    </resheader>
+    <data name="99" xml:space="preserve">
+        <value>Database is not available. this could indicate firewall problem or connection timeout.</value>
+    </data>
+    <data name="98" xml:space="preserve">
+        <value>Xero api call failed. this could indicate any http request problem using xero built in sdk.</value>
+    </data>
+    <data name="97" xml:space="preserve">
+        <value>Email provider failed to communicate. this indicate the provider is down or we are not able to connect using the provider sdk.</value>
+    </data>
+    <data name="96" xml:space="preserve">
+        <value>Sms provider failed to communicate. this indicate the provider is down or we are not able to connect using the provider sdk.</value>
+    </data>
+    <data name="95" xml:space="preserve">
+        <value>GoCardless provider failed, this indicate any http request failure to the provider server from goCardless integration in the source code.</value>
+    </data>
+</root>

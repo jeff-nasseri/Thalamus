@@ -1,0 +1,367 @@
+// Template: C# Service Implementation
+// Description: Template for creating new services following Thalamus patterns
+// Usage: Copy this template and replace placeholders with actual values
+// Placeholders: {{ServiceName}}, {{EntityName}}, {{Namespace}}
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using ErrorHandling;
+using ErrorHandling.Attributes;
+using ErrorHandling.Enums;
+using Application.Common.Extensions;
+
+namespace {{Namespace}}.Services.{{ServiceName}}
+{
+    /// <summary>
+    /// Service for managing {{EntityName}} operations
+    /// </summary>
+    [PointOfFailure(PointOfFailure.Service)]
+    [ErrorType(typeof(BackendErrorType))]
+    [HandlerCode(HandlerCode.{{ServiceName}}Service)]
+    public class {{ServiceName}}Service : I{{ServiceName}}Service
+    {
+        private readonly ILogger<{{ServiceName}}Service> _logger;
+        private readonly I{{EntityName}}Repository _repository;
+        private readonly IMapper _mapper;
+
+        /// <summary>
+        /// Initializes a new instance of the {{ServiceName}}Service
+        /// </summary>
+        /// <param name="logger">Logger instance</param>
+        /// <param name="repository">Repository for data access</param>
+        /// <param name="mapper">Mapper for DTO conversion</param>
+        public {{ServiceName}}Service(
+            ILogger<{{ServiceName}}Service> logger,
+            I{{EntityName}}Repository repository,
+            IMapper mapper)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+
+        /// <summary>
+        /// Gets a {{EntityName}} by ID
+        /// </summary>
+        /// <param name="id">The entity ID</param>
+        /// <returns>Response containing the entity DTO</returns>
+        [HandleException(BackendErrorType.DatabaseConnectionFailed)]
+        [HandleException(BackendErrorType.RecordNotFound)]
+        public async Task<Response<{{EntityName}}Dto>> GetByIdAsync(int id)
+        {
+            _logger.LogInformation("Getting {{EntityName}} with ID: {Id}", id);
+
+            try
+            {
+                var entity = await _repository.GetByIdAsync(id);
+
+                if (entity == null)
+                {
+                    _logger.LogWarning("{{EntityName}} with ID {Id} not found", id);
+                    return Response<{{EntityName}}Dto>.Failure(
+                        Error.Create(
+                            CommonErrorCode.NotFound,
+                            $"{{EntityName}} with ID {id} was not found"
+                        )
+                    );
+                }
+
+                var dto = _mapper.Map<{{EntityName}}Dto>(entity);
+                _logger.LogInformation("Successfully retrieved {{EntityName}} {Id}", id);
+
+                return Response<{{EntityName}}Dto>.Success(dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving {{EntityName}} with ID {Id}", id);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Gets all {{EntityName}}s with pagination
+        /// </summary>
+        /// <param name="page">Page number (1-based)</param>
+        /// <param name="pageSize">Number of items per page</param>
+        /// <returns>Paginated response of entity DTOs</returns>
+        [HandleException(BackendErrorType.DatabaseConnectionFailed)]
+        public async Task<Response<PagedResult<{{EntityName}}Dto>>> GetAllAsync(
+            int page = 1,
+            int pageSize = 20)
+        {
+            _logger.LogInformation(
+                "Getting {{EntityName}}s - Page: {Page}, PageSize: {PageSize}",
+                page,
+                pageSize
+            );
+
+            try
+            {
+                var query = _repository.Query();
+                var pagedResult = await PaginationUtils.PaginateAsync(query, page, pageSize);
+
+                var dtos = _mapper.Map<List<{{EntityName}}Dto>>(pagedResult.Items);
+                var result = new PagedResult<{{EntityName}}Dto>(
+                    dtos,
+                    pagedResult.TotalCount,
+                    page,
+                    pageSize
+                );
+
+                _logger.LogInformation(
+                    "Retrieved {Count} {{EntityName}}s out of {Total}",
+                    dtos.Count,
+                    pagedResult.TotalCount
+                );
+
+                return Response<PagedResult<{{EntityName}}Dto>>.Success(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving {{EntityName}}s");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new {{EntityName}}
+        /// </summary>
+        /// <param name="createDto">DTO containing creation data</param>
+        /// <returns>Response containing the created entity DTO</returns>
+        [HandleException(BackendErrorType.DatabaseConnectionFailed)]
+        [HandleException(BackendErrorType.ValidationFailed)]
+        public async Task<Response<{{EntityName}}Dto>> CreateAsync(Create{{EntityName}}Dto createDto)
+        {
+            _logger.LogInformation("Creating new {{EntityName}}");
+
+            try
+            {
+                // Validate input
+                var validationResult = await ValidateCreateDto(createDto);
+                if (!validationResult.IsSuccess)
+                {
+                    return Response<{{EntityName}}Dto>.Failure(validationResult.Error);
+                }
+
+                // Map and create entity
+                var entity = _mapper.Map<{{EntityName}}>(createDto);
+                await _repository.AddAsync(entity);
+                await _repository.SaveChangesAsync();
+
+                var dto = _mapper.Map<{{EntityName}}Dto>(entity);
+                _logger.LogInformation("Successfully created {{EntityName}} with ID {Id}", entity.Id);
+
+                return Response<{{EntityName}}Dto>.Success(dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating {{EntityName}}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Updates an existing {{EntityName}}
+        /// </summary>
+        /// <param name="id">The entity ID</param>
+        /// <param name="updateDto">DTO containing update data</param>
+        /// <returns>Response containing the updated entity DTO</returns>
+        [HandleException(BackendErrorType.DatabaseConnectionFailed)]
+        [HandleException(BackendErrorType.RecordNotFound)]
+        [HandleException(BackendErrorType.ValidationFailed)]
+        public async Task<Response<{{EntityName}}Dto>> UpdateAsync(
+            int id,
+            Update{{EntityName}}Dto updateDto)
+        {
+            _logger.LogInformation("Updating {{EntityName}} with ID: {Id}", id);
+
+            try
+            {
+                var entity = await _repository.GetByIdAsync(id);
+                if (entity == null)
+                {
+                    _logger.LogWarning("{{EntityName}} with ID {Id} not found for update", id);
+                    return Response<{{EntityName}}Dto>.Failure(
+                        Error.Create(
+                            CommonErrorCode.NotFound,
+                            $"{{EntityName}} with ID {id} was not found"
+                        )
+                    );
+                }
+
+                // Validate input
+                var validationResult = await ValidateUpdateDto(updateDto);
+                if (!validationResult.IsSuccess)
+                {
+                    return Response<{{EntityName}}Dto>.Failure(validationResult.Error);
+                }
+
+                // Update entity
+                _mapper.Map(updateDto, entity);
+                await _repository.UpdateAsync(entity);
+                await _repository.SaveChangesAsync();
+
+                var dto = _mapper.Map<{{EntityName}}Dto>(entity);
+                _logger.LogInformation("Successfully updated {{EntityName}} {Id}", id);
+
+                return Response<{{EntityName}}Dto>.Success(dto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating {{EntityName}} with ID {Id}", id);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Deletes a {{EntityName}}
+        /// </summary>
+        /// <param name="id">The entity ID</param>
+        /// <returns>Response indicating success or failure</returns>
+        [HandleException(BackendErrorType.DatabaseConnectionFailed)]
+        [HandleException(BackendErrorType.RecordNotFound)]
+        public async Task<Response<bool>> DeleteAsync(int id)
+        {
+            _logger.LogInformation("Deleting {{EntityName}} with ID: {Id}", id);
+
+            try
+            {
+                var entity = await _repository.GetByIdAsync(id);
+                if (entity == null)
+                {
+                    _logger.LogWarning("{{EntityName}} with ID {Id} not found for deletion", id);
+                    return Response<bool>.Failure(
+                        Error.Create(
+                            CommonErrorCode.NotFound,
+                            $"{{EntityName}} with ID {id} was not found"
+                        )
+                    );
+                }
+
+                await _repository.DeleteAsync(id);
+                await _repository.SaveChangesAsync();
+
+                _logger.LogInformation("Successfully deleted {{EntityName}} {Id}", id);
+                return Response<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting {{EntityName}} with ID {Id}", id);
+                throw;
+            }
+        }
+
+        #region Private Helper Methods
+
+        private async Task<Response<bool>> ValidateCreateDto(Create{{EntityName}}Dto dto)
+        {
+            // Add your validation logic here
+            if (string.IsNullOrWhiteSpace(dto.Name))
+            {
+                return Response<bool>.Failure(
+                    Error.Create(
+                        CommonErrorCode.ValidationError,
+                        "Name is required"
+                    )
+                );
+            }
+
+            // Additional validation...
+
+            return Response<bool>.Success(true);
+        }
+
+        private async Task<Response<bool>> ValidateUpdateDto(Update{{EntityName}}Dto dto)
+        {
+            // Add your validation logic here
+            if (string.IsNullOrWhiteSpace(dto.Name))
+            {
+                return Response<bool>.Failure(
+                    Error.Create(
+                        CommonErrorCode.ValidationError,
+                        "Name is required"
+                    )
+                );
+            }
+
+            // Additional validation...
+
+            return Response<bool>.Success(true);
+        }
+
+        #endregion
+    }
+
+    #region DTOs
+
+    /// <summary>
+    /// DTO for {{EntityName}} data transfer
+    /// </summary>
+    public record {{EntityName}}Dto : IBaseDto
+    {
+        public int Id { get; init; }
+        public string Name { get; init; } = string.Empty;
+        public DateTime CreatedAt { get; init; }
+        public DateTime? UpdatedAt { get; init; }
+    }
+
+    /// <summary>
+    /// DTO for creating a new {{EntityName}}
+    /// </summary>
+    public record Create{{EntityName}}Dto
+    {
+        public string Name { get; init; } = string.Empty;
+        // Add other properties...
+    }
+
+    /// <summary>
+    /// DTO for updating an existing {{EntityName}}
+    /// </summary>
+    public record Update{{EntityName}}Dto
+    {
+        public string Name { get; init; } = string.Empty;
+        // Add other properties...
+    }
+
+    #endregion
+
+    #region Interface
+
+    /// <summary>
+    /// Interface for {{ServiceName}}Service
+    /// </summary>
+    public interface I{{ServiceName}}Service
+    {
+        Task<Response<{{EntityName}}Dto>> GetByIdAsync(int id);
+        Task<Response<PagedResult<{{EntityName}}Dto>>> GetAllAsync(int page = 1, int pageSize = 20);
+        Task<Response<{{EntityName}}Dto>> CreateAsync(Create{{EntityName}}Dto createDto);
+        Task<Response<{{EntityName}}Dto>> UpdateAsync(int id, Update{{EntityName}}Dto updateDto);
+        Task<Response<bool>> DeleteAsync(int id);
+    }
+
+    #endregion
+}
+
+/*
+ * USAGE INSTRUCTIONS:
+ *
+ * 1. Copy this template to your target location
+ * 2. Replace all placeholders:
+ *    - {{ServiceName}}: Name of your service (e.g., "Agent", "Memory", "Plan")
+ *    - {{EntityName}}: Name of your domain entity
+ *    - {{Namespace}}: Your project namespace (e.g., "Application")
+ *
+ * 3. Customize the DTOs to match your entity properties
+ * 4. Implement validation logic in the helper methods
+ * 5. Add any additional business logic as needed
+ * 6. Register the service in DependencyInjection.cs
+ *
+ * EXAMPLE:
+ * For an Agent service:
+ *   {{ServiceName}} ’ Agent
+ *   {{EntityName}} ’ Agent
+ *   {{Namespace}} ’ Application
+ */
