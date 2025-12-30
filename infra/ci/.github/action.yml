@@ -1,0 +1,131 @@
+name: 'Thalamus Build and Test'
+description: 'Composite action for building and testing Thalamus solution'
+author: 'Thalamus Team'
+
+branding:
+  icon: 'package'
+  color: 'blue'
+
+inputs:
+  dotnet-version:
+    description: '.NET SDK version to use'
+    required: false
+    default: '8.0.x'
+
+  configuration:
+    description: 'Build configuration (Debug or Release)'
+    required: false
+    default: 'Release'
+
+  run-tests:
+    description: 'Whether to run tests'
+    required: false
+    default: 'true'
+
+  collect-coverage:
+    description: 'Whether to collect code coverage'
+    required: false
+    default: 'false'
+
+  solution-path:
+    description: 'Path to solution file'
+    required: false
+    default: 'Thalamus.sln'
+
+outputs:
+  build-success:
+    description: 'Whether the build succeeded'
+    value: ${{ steps.build.outcome == 'success' }}
+
+  test-success:
+    description: 'Whether tests passed'
+    value: ${{ steps.test.outcome == 'success' }}
+
+  coverage-report:
+    description: 'Path to coverage report'
+    value: ${{ steps.coverage.outputs.report-path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - name: Display .NET info
+      shell: bash
+      run: dotnet --info
+
+    - name: Restore dependencies
+      shell: bash
+      run: dotnet restore ${{ inputs.solution-path }}
+
+    - name: Build solution
+      id: build
+      shell: bash
+      run: |
+        dotnet build ${{ inputs.solution-path }} \
+          --configuration ${{ inputs.configuration }} \
+          --no-restore \
+          /p:TreatWarningsAsErrors=true
+
+    - name: Run tests
+      id: test
+      if: inputs.run-tests == 'true'
+      shell: bash
+      run: |
+        dotnet test ${{ inputs.solution-path }} \
+          --configuration ${{ inputs.configuration }} \
+          --no-build \
+          --verbosity normal \
+          --logger "trx;LogFileName=test-results.trx"
+
+    - name: Collect code coverage
+      id: coverage
+      if: inputs.collect-coverage == 'true'
+      shell: bash
+      run: |
+        dotnet test ${{ inputs.solution-path }} \
+          --configuration ${{ inputs.configuration }} \
+          --no-build \
+          /p:CollectCoverage=true \
+          /p:CoverageReportFormat=opencover \
+          /p:CoverageReportDirectory=./coverage
+        echo "report-path=./coverage" >> $GITHUB_OUTPUT
+
+    - name: Upload test results
+      if: always() && inputs.run-tests == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: '**/test-results.trx'
+
+    - name: Upload coverage reports
+      if: inputs.collect-coverage == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-reports
+        path: ./coverage/**/*
+
+    - name: Check build warnings
+      shell: bash
+      run: |
+        echo "Checking for build warnings..."
+        # This step ensures TreatWarningsAsErrors caught any issues
+
+    - name: Summary
+      if: always()
+      shell: bash
+      run: |
+        echo "### Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- Configuration: ${{ inputs.configuration }}" >> $GITHUB_STEP_SUMMARY
+        echo "- .NET Version: ${{ inputs.dotnet-version }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Build Status: ${{ steps.build.outcome }}" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ inputs.run-tests }}" == "true" ]; then
+          echo "- Test Status: ${{ steps.test.outcome }}" >> $GITHUB_STEP_SUMMARY
+        fi
+        if [ "${{ inputs.collect-coverage }}" == "true" ]; then
+          echo "- Coverage: Collected" >> $GITHUB_STEP_SUMMARY
+        fi

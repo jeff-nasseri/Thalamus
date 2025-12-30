@@ -1,0 +1,267 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - 'feat/**'
+      - 'fix/**'
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'article/**'
+      - '.gitignore'
+
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  SOLUTION_PATH: 'Thalamus.sln'
+  CONFIGURATION: 'Release'
+
+jobs:
+  # Job 1: Code Quality Checks
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better analysis
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: Check code formatting
+        run: |
+          dotnet format ${{ env.SOLUTION_PATH }} --verify-no-changes --verbosity diagnostic
+
+      - name: Run static analysis
+        run: |
+          dotnet build ${{ env.SOLUTION_PATH }} \
+            --configuration ${{ env.CONFIGURATION }} \
+            /p:TreatWarningsAsErrors=true \
+            /p:AnalysisLevel=latest
+
+      - name: Security scan with dotnet list package
+        run: |
+          dotnet list package --vulnerable --include-transitive || true
+
+  # Job 2: Build and Test
+  build-and-test:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        dotnet-version: ['8.0.x']
+      fail-fast: false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use composite build action
+        uses: ./infra/ci/.github/action.yml
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+          configuration: ${{ env.CONFIGURATION }}
+          run-tests: 'true'
+          collect-coverage: ${{ matrix.os == 'ubuntu-latest' }}
+          solution-path: ${{ env.SOLUTION_PATH }}
+
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test Results (${{ matrix.os }})
+          path: '**/test-results.trx'
+          reporter: dotnet-trx
+          fail-on-error: true
+
+  # Job 3: Code Coverage
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: Build
+        run: dotnet build ${{ env.SOLUTION_PATH }} --configuration ${{ env.CONFIGURATION }} --no-restore
+
+      - name: Collect coverage
+        run: |
+          dotnet test ${{ env.SOLUTION_PATH }} \
+            --configuration ${{ env.CONFIGURATION }} \
+            --no-build \
+            /p:CollectCoverage=true \
+            /p:CoverageReportFormat=opencover \
+            /p:CoverageReportDirectory=./coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/coverage.opencover.xml
+          flags: unittests
+          name: codecov-thalamus
+          fail_ci_if_error: false
+
+      - name: Generate coverage report
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          reportgenerator \
+            -reports:./coverage/coverage.opencover.xml \
+            -targetdir:./coverage-report \
+            -reporttypes:HtmlInline_AzurePipelines
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ./coverage-report/**/*
+
+  # Job 4: Integration Tests
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: 'YourStrong@Passw0rd'
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q 'SELECT 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup database
+        env:
+          DATABASE_CONNECTION_STRING: 'Server=localhost,1433;Database=ThalamusTest;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True'
+        run: |
+          # Run migrations if they exist
+          echo "Setting up test database..."
+
+      - name: Run integration tests
+        env:
+          DATABASE_CONNECTION_STRING: 'Server=localhost,1433;Database=ThalamusTest;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True'
+        run: |
+          dotnet test ${{ env.SOLUTION_PATH }} \
+            --configuration ${{ env.CONFIGURATION }} \
+            --filter "Category=Integration" \
+            --logger "trx;LogFileName=integration-test-results.trx"
+
+  # Job 5: Docker Build
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/presentation/Web.Api/Dockerfile
+          push: false
+          tags: thalamus-api:pr-${{ github.event.pull_request.number }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Docker image
+        run: |
+          docker run --rm thalamus-api:pr-${{ github.event.pull_request.number }} --version || true
+
+  # Job 6: PR Checks Summary
+  pr-summary:
+    name: PR Summary
+    runs-on: ubuntu-latest
+    needs: [code-quality, build-and-test, coverage, integration-tests, docker-build]
+    if: always()
+
+    steps:
+      - name: Check all jobs
+        run: |
+          echo "### PR Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Code Quality: ${{ needs.code-quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Build and Test: ${{ needs.build-and-test.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Coverage: ${{ needs.coverage.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Integration Tests: ${{ needs.integration-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Docker Build: ${{ needs.docker-build.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ needs.code-quality.result }}" == "failure" ]] || \
+             [[ "${{ needs.build-and-test.result }}" == "failure" ]] || \
+             [[ "${{ needs.integration-tests.result }}" == "failure" ]]; then
+            echo "L PR validation failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo " PR validation passed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `
+            ## PR Validation Results
+
+            | Check | Status |
+            |-------|--------|
+            | Code Quality | ${{ needs.code-quality.result }} |
+            | Build & Test | ${{ needs.build-and-test.result }} |
+            | Coverage | ${{ needs.coverage.result }} |
+            | Integration Tests | ${{ needs.integration-tests.result }} |
+            | Docker Build | ${{ needs.docker-build.result }} |
+
+            ${{ needs.code-quality.result == 'success' && needs.build-and-test.result == 'success' && needs.integration-tests.result == 'success' ? ' All checks passed!' : 'L Some checks failed' }}
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });

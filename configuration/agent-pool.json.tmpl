@@ -1,0 +1,23 @@
+﻿{
+  "agents": [
+    {
+      "type": "master_agent",
+      "location": "master_node",
+      "role": "Core coordinator",
+      "responsibilities": [
+        "Communicate with all agents",
+        "Process human requests",
+        "Coordinate slave agent operations"
+      ]
+    },
+    {
+      "type": "slave_agent",
+      "location": "slave_node",
+      "role": "Task executor",
+      "team_structure": {
+        "description": "Multiple agents can work together as a team",
+        "lead_agent_required": "When team has 3 or more agents, one becomes slave lead agent"
+      }
+    }
+  ]
+}

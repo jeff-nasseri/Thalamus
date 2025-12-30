@@ -1,0 +1,24 @@
+﻿# Task: Code Structure Cleanup and Documentation
+
+## Objective
+Clean up and reformat C# code files while ensuring proper documentation coverage.
+
+## Instructions
+
+### Primary Tasks
+1. **Open each `{{ FILE_EXTENSION }}` file** in the codebase
+2. **Clean up code structure** - reformat and organize existing code
+3. **Review and cleanup summaries** - fix formatting and structure of existing XML documentation
+4. **Add missing summaries** - provide proper XML documentation where none exists
+
+## Goals
+- Re-structure and reformat existing code
+- Clean up existing summary documentation
+- Provide proper summary documentation for any type or file that lacks it
+
+## Scope
+- Focus on structural improvements and documentation only
+- Do not alter business logic or functionality
+- Maintain existing code behavior
+
+NOTE: make sure to cleanup at the {{ ROOT_SPECIFIC_PATH }}

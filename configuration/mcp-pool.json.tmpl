@@ -1,0 +1,114 @@
+﻿{
+  "version": "1.0.0",
+  "metadata": {
+    "created": "2024-12-30T10:00:00Z",
+    "environment": "production",
+    "organization": "Thalamus"
+  },
+  "required_mcps": [
+    {
+      "title": "IO MCP",
+      "mcp_code": "io-mcp-v1",
+      "description": "File system operations and data management",
+      "enabled": true,
+      "mcp_configurations": [
+        {
+          "platform": "docker",
+          "configuration": {
+            "image": "thalamus/io-mcp:latest",
+            "container_name": "io-mcp-production",
+            "restart_policy": "unless-stopped",
+            "volumes": [
+              "/data:/app/data",
+              "/logs:/app/logs"
+            ],
+            "environment": {
+              "MAX_FILE_SIZE": "100MB",
+              "ALLOWED_PATHS": "/app/data",
+              "LOG_LEVEL": "info",
+              "ENABLE_MONITORING": "true"
+            },
+            "ports": [
+              "8080:8080"
+            ],
+            "networks": [
+              "thalamus-network"
+            ],
+            "health_check": {
+              "test": ["CMD", "curl", "-f", "http://localhost:8080/health"],
+              "interval": "30s",
+              "timeout": "10s",
+              "retries": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "MikroTik Network MCP",
+      "mcp_code": "mikrotik-mcp-v1",
+      "description": "MikroTik router management and network automation",
+      "enabled": true,
+      "mcp_configurations": [
+        {
+          "platform": "docker",
+          "configuration": {
+            "image": "thalamus/mikrotik-mcp:latest",
+            "container_name": "mikrotik-mcp-production",
+            "restart_policy": "unless-stopped",
+            "environment": {
+              "MIKROTIK_HOST": "192.168.88.1",
+              "MIKROTIK_PORT": "8728",
+              "MIKROTIK_USER": "admin",
+              "MIKROTIK_PASSWORD": "your_password_here",
+              "ENABLE_SSL": "true",
+              "CONNECTION_TIMEOUT": "10",
+              "AUTO_RECONNECT": "true",
+              "LOG_LEVEL": "info"
+            },
+            "ports": [
+              "8086:8086"
+            ],
+            "networks": [
+              "thalamus-network"
+            ],
+            "cap_add": [
+              "NET_ADMIN"
+            ],
+            "health_check": {
+              "test": ["CMD", "curl", "-f", "http://localhost:8086/health"],
+              "interval": "30s",
+              "timeout": "10s",
+              "retries": 3
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "global_settings": {
+    "log_level": "info",
+    "log_format": "json",
+    "enable_telemetry": true,
+    "health_check_interval": 30,
+    "graceful_shutdown_timeout": 30,
+    "max_retry_attempts": 3,
+    "retry_backoff": "exponential"
+  },
+  "network_settings": {
+    "docker": {
+      "network_name": "thalamus-network",
+      "driver": "bridge",
+      "subnet": "172.20.0.0/16"
+    }
+  },
+  "security_settings": {
+    "enable_tls": true,
+    "cors_allowed_origins": "*",
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 100,
+      "burst_size": 20
+    }
+  }
+}
