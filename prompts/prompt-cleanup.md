@@ -1,1 +1,1 @@
-﻿Clean up the following prompts without adding or removing content. Only reformat and correct any typos. Use task-based prompt style for formatting.
+Clean up the following prompts without adding or removing content. Only reformat and correct any typos. Use task-based prompt style for formatting.

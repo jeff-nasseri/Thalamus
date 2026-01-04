@@ -7,16 +7,16 @@ using MediatR;
 namespace Application.Common.Extensions;
 
 /// <summary>
-/// Provides extension methods for MediatR requests to retrieve handler codes.
+///     Provides extension methods for MediatR requests to retrieve handler codes.
 /// </summary>
 public static class RequestExtensions
 {
     private static readonly ConcurrentDictionary<Type, HandlerCode> _handlerCodeCache = new();
 
     /// <summary>
-    /// Gets the handler code from a request instance.
+    ///     Gets the handler code from a request instance.
     /// </summary>
-    /// <typeparam name="TRequest">The request type implementing <see cref="IBaseRequest"/>.</typeparam>
+    /// <typeparam name="TRequest">The request type implementing <see cref="IBaseRequest" />.</typeparam>
     /// <param name="request">The request instance.</param>
     /// <returns>The handler code associated with the request type.</returns>
     public static HandlerCode GetHandlerCode<TRequest>(this TRequest request)
@@ -26,9 +26,9 @@ public static class RequestExtensions
     }
 
     /// <summary>
-    /// Gets the handler code from a request type.
+    ///     Gets the handler code from a request type.
     /// </summary>
-    /// <typeparam name="TRequest">The request type implementing <see cref="IBaseRequest"/>.</typeparam>
+    /// <typeparam name="TRequest">The request type implementing <see cref="IBaseRequest" />.</typeparam>
     /// <returns>The handler code associated with the request type.</returns>
     public static HandlerCode GetHandlerCode<TRequest>()
         where TRequest : IBaseRequest
@@ -37,7 +37,7 @@ public static class RequestExtensions
     }
 
     /// <summary>
-    /// Gets the handler code from a type, using a cache for performance.
+    ///     Gets the handler code from a type, using a cache for performance.
     /// </summary>
     /// <param name="type">The type to get the handler code from.</param>
     /// <returns>The handler code from the HandlerCodeAttribute.</returns>

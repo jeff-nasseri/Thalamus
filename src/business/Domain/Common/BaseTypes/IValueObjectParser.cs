@@ -1,14 +1,14 @@
 ﻿namespace Domain.Common.BaseTypes;
 
 /// <summary>
-/// Defines a contract for parsing input values into value objects.
+///     Defines a contract for parsing input values into value objects.
 /// </summary>
 /// <typeparam name="TValueObject">The value object type to parse into.</typeparam>
 /// <typeparam name="T">The input type to parse from.</typeparam>
 public interface IValueObjectParser<TValueObject, in T> where TValueObject : ValueObject
 {
     /// <summary>
-    /// Attempts to parse the input into a specific value object type.
+    ///     Attempts to parse the input into a specific value object type.
     /// </summary>
     /// <param name="input">The input value to parse.</param>
     /// <param name="valueObject">The parsed value object if successful; otherwise, null.</param>
@@ -16,7 +16,7 @@ public interface IValueObjectParser<TValueObject, in T> where TValueObject : Val
     static abstract bool TryParse(T input, out TValueObject? valueObject);
 
     /// <summary>
-    /// Parses the input into a specific value object type.
+    ///     Parses the input into a specific value object type.
     /// </summary>
     /// <param name="input">The input value to parse.</param>
     /// <returns>The parsed value object.</returns>

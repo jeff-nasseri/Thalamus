@@ -1,0 +1,29 @@
+﻿# Task Discovery and Implementation
+
+## Objective
+Search the codebase for task markers (`#claude-task`) and implement the specified tasks according to their inline documentation.
+
+## Instructions
+
+### 1. Code Discovery
+- Navigate to the directory: `{{PATH}}`
+- Search recursively for all files matching: `{{EXTENSION}}`
+
+### 2. Task Identification
+- Scan each file for the marker: `#claude-task`
+- Extract the complete task implementation guide from the associated comments
+- Parse task requirements, constraints, and acceptance criteria
+
+### 3. Task Implementation
+For each discovered task:
+
+**Execute:**
+- Read and understand the task requirements thoroughly
+- Implement the solution following the specified guidelines
+- Maintain existing code style and conventions
+- Ensure proper error handling and edge cases
+
+**Document:**
+- Remove the `#claude-task` marker upon completion
+- Add inline comments explaining complex logic
+- Update relevant documentation files if applicable

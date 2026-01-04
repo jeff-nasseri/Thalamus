@@ -5,12 +5,12 @@ using System.Reflection;
 namespace Application.Common.Extensions;
 
 /// <summary>
-/// Provides extension methods for retrieving attribute values from properties.
+///     Provides extension methods for retrieving attribute values from properties.
 /// </summary>
 public static class AttributeExtensions
 {
     /// <summary>
-    /// Gets the DisplayName from the DisplayNameAttribute of a property.
+    ///     Gets the DisplayName from the DisplayNameAttribute of a property.
     /// </summary>
     /// <typeparam name="T">The type containing the property.</typeparam>
     /// <param name="propertyName">The name of the property.</param>
@@ -21,7 +21,7 @@ public static class AttributeExtensions
     }
 
     /// <summary>
-    /// Gets the Name from the DisplayAttribute of a property.
+    ///     Gets the Name from the DisplayAttribute of a property.
     /// </summary>
     /// <typeparam name="T">The type containing the property.</typeparam>
     /// <param name="propertyName">The name of the property.</param>

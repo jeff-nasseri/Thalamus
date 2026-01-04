@@ -3,13 +3,13 @@
 namespace Application.Common.Validators;
 
 /// <summary>
-/// Defines a contract for request validation using FluentValidation.
+///     Defines a contract for request validation using FluentValidation.
 /// </summary>
 /// <typeparam name="TRequest">The type of request to validate.</typeparam>
 public interface IRequestValidator<in TRequest>
 {
     /// <summary>
-    /// Validates a request asynchronously.
+    ///     Validates a request asynchronously.
     /// </summary>
     /// <param name="request">The request to validate.</param>
     /// <param name="cancellationToken">Cancellation token.</param>

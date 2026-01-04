@@ -3,13 +3,13 @@
 namespace Domain.ValueObjects;
 
 /// <summary>
-/// Represents a task value object within a plan.
-/// A plan can contain one or more tasks that need to be executed by agents.
+///     Represents a task value object within a plan.
+///     A plan can contain one or more tasks that need to be executed by agents.
 /// </summary>
 public class TaskValueObject : ValueObject
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskValueObject"/> class.
+    ///     Initializes a new instance of the <see cref="TaskValueObject" /> class.
     /// </summary>
     public TaskValueObject()
     {
@@ -19,7 +19,7 @@ public class TaskValueObject : ValueObject
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TaskValueObject"/> class with specified values.
+    ///     Initializes a new instance of the <see cref="TaskValueObject" /> class with specified values.
     /// </summary>
     /// <param name="order">The execution order of the task.</param>
     /// <param name="name">The name of the task.</param>
@@ -33,27 +33,27 @@ public class TaskValueObject : ValueObject
     }
 
     /// <summary>
-    /// Gets or sets the execution order of the task within the plan.
+    ///     Gets or sets the execution order of the task within the plan.
     /// </summary>
     public int Order { get; set; }
 
     /// <summary>
-    /// Gets or sets the name of the task.
+    ///     Gets or sets the name of the task.
     /// </summary>
     public string Name { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the description of the task.
+    ///     Gets or sets the description of the task.
     /// </summary>
     public string Description { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the task has been completed.
+    ///     Gets or sets a value indicating whether the task has been completed.
     /// </summary>
     public bool IsDone { get; set; }
 
     /// <summary>
-    /// Marks the task as completed.
+    ///     Marks the task as completed.
     /// </summary>
     public void MarkAsCompleted()
     {
@@ -61,7 +61,7 @@ public class TaskValueObject : ValueObject
     }
 
     /// <summary>
-    /// Marks the task as not completed.
+    ///     Marks the task as not completed.
     /// </summary>
     public void MarkAsIncomplete()
     {
@@ -69,7 +69,7 @@ public class TaskValueObject : ValueObject
     }
 
     /// <summary>
-    /// Gets the components that define the equality of the TaskValueObject.
+    ///     Gets the components that define the equality of the TaskValueObject.
     /// </summary>
     /// <returns>An enumerable of objects that represent the equality components.</returns>
     protected override IEnumerable<object> GetEqualityComponents()

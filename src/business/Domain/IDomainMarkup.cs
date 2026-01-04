@@ -1,8 +1,10 @@
-﻿namespace Domain;
+﻿using Domain.Common.BaseTypes;
+
+namespace Domain;
 
 /// <summary>
-/// Marker interface for identifying the domain assembly.
+///     Marker interface for identifying the domain assembly.
 /// </summary>
-public interface IDomainMarkup
+public interface IDomainMarkup : IMarkup
 {
 }

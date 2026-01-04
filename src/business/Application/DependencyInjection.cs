@@ -6,12 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Application;
 
 /// <summary>
-/// Provides dependency injection configuration for the Application layer.
+///     Provides dependency injection configuration for the Application layer.
 /// </summary>
 public static class DependencyInjection
 {
     /// <summary>
-    /// Registers Application layer services including MediatR and FluentValidation.
+    ///     Registers Application layer services including MediatR and FluentValidation.
     /// </summary>
     /// <param name="services">The service collection to configure.</param>
     /// <returns>The configured service collection.</returns>

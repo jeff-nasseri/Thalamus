@@ -8,13 +8,13 @@ using MediatR;
 namespace Application.Common.Executors;
 
 /// <summary>
-/// Executes MediatR request handlers using reflection to invoke handler steps in order.
+///     Executes MediatR request handlers using reflection to invoke handler steps in order.
 /// </summary>
-/// <typeparam name="TRequest">The request type implementing <see cref="IRequest{TResponse}"/>.</typeparam>
-/// <typeparam name="TResponse">The response type implementing <see cref="IResponse"/>.</typeparam>
+/// <typeparam name="TRequest">The request type implementing <see cref="IRequest{TResponse}" />.</typeparam>
+/// <typeparam name="TResponse">The response type implementing <see cref="IResponse" />.</typeparam>
 /// <typeparam name="TRequestHandler">The handler type that processes the request.</typeparam>
 /// <remarks>
-/// This executor is marked as obsolete due to performance costs associated with reflection invocation.
+///     This executor is marked as obsolete due to performance costs associated with reflection invocation.
 /// </remarks>
 [Obsolete("Cost effect because of reflection invocation")]
 public class ReflectionExecutor<TRequest, TResponse, TRequestHandler>
@@ -23,7 +23,7 @@ public class ReflectionExecutor<TRequest, TResponse, TRequestHandler>
     where TRequestHandler : notnull
 {
     /// <summary>
-    /// Executes the handler by invoking all handler steps in their defined order.
+    ///     Executes the handler by invoking all handler steps in their defined order.
     /// </summary>
     /// <param name="handler">The handler instance to execute.</param>
     /// <param name="request">The request to process.</param>
@@ -33,16 +33,14 @@ public class ReflectionExecutor<TRequest, TResponse, TRequestHandler>
     public static async Task<TResponse> ExecuteAsync(TRequestHandler handler, TRequest request,
         CancellationToken cancellationToken = default)
     {
-        MethodInfo? prepaidState = typeof(TRequest).GetMethod("PrepaidState");
+        var prepaidState = typeof(TRequest).GetMethod("PrepaidState");
 
         if (prepaidState is null)
-        {
             throw new PlatformNotSupportedException($"Your handler {handler} should implement PrepaidState.");
-        }
 
         prepaidState.Invoke(handler, new object[] { request, cancellationToken });
 
-        List<MethodInfo> steps = typeof(TRequestHandler).GetMethods()
+        var steps = typeof(TRequestHandler).GetMethods()
             .Where(m => m.GetCustomAttribute<HandlerStepAttribute>() != null).ToList();
 
         List<HandlerStepModel> handlerStepModels = steps.Select(s => new HandlerStepModel
@@ -55,21 +53,18 @@ public class ReflectionExecutor<TRequest, TResponse, TRequestHandler>
 
         List<object> responses = new();
 
-        foreach (HandlerStepModel stepModel in handlerStepModels)
+        foreach (var stepModel in handlerStepModels)
         {
-            MethodInfo? methodInfo = typeof(TRequestHandler).GetMethod(stepModel.Name);
+            var methodInfo = typeof(TRequestHandler).GetMethod(stepModel.Name);
 
             try
             {
-                Task task = (Task)methodInfo!.Invoke(handler, null)!;
+                var task = (Task)methodInfo!.Invoke(handler, null)!;
                 await task.ConfigureAwait(false);
-                PropertyInfo? propertyInfo = task.GetType().GetProperty("Result");
-                IResponse result = (IResponse)propertyInfo!.GetValue(task)!;
+                var propertyInfo = task.GetType().GetProperty("Result");
+                var result = (IResponse)propertyInfo!.GetValue(task)!;
 
-                if (!result.Success)
-                {
-                    return (TResponse)result;
-                }
+                if (!result.Success) return (TResponse)result;
 
                 responses.Add(result);
             }
@@ -78,10 +73,11 @@ public class ReflectionExecutor<TRequest, TResponse, TRequestHandler>
                 IEnumerable<HandleExceptionAttribute> handleExceptionAttributes = methodInfo!
                     .GetCustomAttributes<HandleExceptionAttribute>().Where(a => a.ExceptionType == exception.GetType());
 
-                foreach (HandleExceptionAttribute handleExceptionAttribute in handleExceptionAttributes)
+                foreach (var handleExceptionAttribute in handleExceptionAttributes)
                 {
-                    MethodInfo? method =
-                        handleExceptionAttribute.ExceptionHandlerType.GetMethod(handleExceptionAttribute.ExceptionHandlerMethodName);
+                    var method =
+                        handleExceptionAttribute.ExceptionHandlerType.GetMethod(handleExceptionAttribute
+                            .ExceptionHandlerMethodName);
 
                     method!.Invoke(null, new object[] { exception, handler });
                 }
