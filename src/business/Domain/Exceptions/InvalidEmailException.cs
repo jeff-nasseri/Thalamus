@@ -6,13 +6,13 @@ using ErrorHandling.Interfaces;
 namespace Domain.Exceptions;
 
 /// <summary>
-/// Exception thrown when an email address is invalid.
+///     Exception thrown when an email address is invalid.
 /// </summary>
 [Serializable]
 public class InvalidEmailException : AppException, ICodedException<CommonErrorCode>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidEmailException"/> class.
+    ///     Initializes a new instance of the <see cref="InvalidEmailException" /> class.
     /// </summary>
     /// <param name="email">The invalid email address.</param>
     public InvalidEmailException(string? email)
@@ -21,7 +21,7 @@ public class InvalidEmailException : AppException, ICodedException<CommonErrorCo
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidEmailException"/> class with an inner exception.
+    ///     Initializes a new instance of the <see cref="InvalidEmailException" /> class with an inner exception.
     /// </summary>
     /// <param name="email">The invalid email address.</param>
     /// <param name="innerException">The exception that caused this exception.</param>
@@ -31,7 +31,7 @@ public class InvalidEmailException : AppException, ICodedException<CommonErrorCo
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidEmailException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="InvalidEmailException" /> class with serialized data.
     /// </summary>
     /// <param name="info">The serialization info.</param>
     /// <param name="context">The streaming context.</param>
@@ -43,7 +43,7 @@ public class InvalidEmailException : AppException, ICodedException<CommonErrorCo
     }
 
     /// <summary>
-    /// Gets the error code associated with this exception.
+    ///     Gets the error code associated with this exception.
     /// </summary>
     /// <returns>The common error code for invalid email addresses.</returns>
     public CommonErrorCode GetErrorCode()

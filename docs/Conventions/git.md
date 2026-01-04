@@ -1,0 +1,1 @@
+# Provide git convention details

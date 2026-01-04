@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python fix_md.py:*)",
+      "Bash(python:*)",
+      "Bash(then echo \"  OK - Clean text file\")",
+      "Bash(else echo \"  WARNING - May contain binary data\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(dotnet build:*)"
+    ]
+  }
+}

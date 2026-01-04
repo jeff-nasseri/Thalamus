@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Application.Common.Validators;
+﻿using Application.Common.Validators;
 using Thalamus.Web.Logging.Sentry;
 using Thalamus.Web.Swagger;
 using Infrastructure.DependencyInjection;
@@ -13,10 +12,8 @@ using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationM
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using DependencyInjection = Application.DependencyInjection;
 
 namespace Thalamus.Web.Extensions;

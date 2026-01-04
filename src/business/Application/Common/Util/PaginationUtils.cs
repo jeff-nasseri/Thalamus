@@ -1,12 +1,12 @@
 ﻿namespace Application.Common.Util;
 
 /// <summary>
-/// Provides utility methods for pagination calculations.
+///     Provides utility methods for pagination calculations.
 /// </summary>
 public abstract class PaginationUtils
 {
     /// <summary>
-    /// Calculates the number of items to skip for pagination.
+    ///     Calculates the number of items to skip for pagination.
     /// </summary>
     /// <param name="skip">Output parameter for the number of items to skip.</param>
     /// <param name="perPage">Number of items per page.</param>

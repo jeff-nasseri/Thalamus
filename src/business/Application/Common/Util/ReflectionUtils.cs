@@ -3,12 +3,12 @@
 namespace Application.Common.Util;
 
 /// <summary>
-/// Provides utility methods for reflection operations.
+///     Provides utility methods for reflection operations.
 /// </summary>
 public abstract class ReflectionUtils
 {
     /// <summary>
-    /// Gets the names of properties that have changed between two objects using reflection.
+    ///     Gets the names of properties that have changed between two objects using reflection.
     /// </summary>
     /// <typeparam name="T">The type of the original object.</typeparam>
     /// <typeparam name="Tg">The type of the changed object.</typeparam>
@@ -23,27 +23,21 @@ public abstract class ReflectionUtils
         List<string> changes = new();
         IEnumerable<PropertyInfo> properties = typeof(T).GetProperties().ToList();
 
-        foreach (PropertyInfo? property in properties)
+        foreach (var property in properties)
         {
-            if (excludes.Any(item => item.ToLower().Contains(property.Name.ToLower())))
-            {
-                continue;
-            }
+            if (excludes.Any(item => item.ToLower().Contains(property.Name.ToLower()))) continue;
 
-            string? originalValue = property.GetValue(original)?.ToString();
-            string? changedValue = property.GetValue(changedObj)?.ToString();
+            var originalValue = property.GetValue(original)?.ToString();
+            var changedValue = property.GetValue(changedObj)?.ToString();
 
-            if (originalValue != changedValue)
-            {
-                changes.Add(property.Name);
-            }
+            if (originalValue != changedValue) changes.Add(property.Name);
         }
 
         return changes;
     }
 
     /// <summary>
-    /// Gets the names of properties that have changed between two objects of the same type using reflection.
+    ///     Gets the names of properties that have changed between two objects of the same type using reflection.
     /// </summary>
     /// <typeparam name="T">The type of both objects.</typeparam>
     /// <param name="original">The original object.</param>

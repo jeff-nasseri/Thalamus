@@ -1,12 +1,12 @@
 ﻿namespace Application.Common.Extensions;
 
 /// <summary>
-/// Provides base extension methods for common operations on collections and numeric types.
+///     Provides base extension methods for common operations on collections and numeric types.
 /// </summary>
 public static class BaseExtension
 {
     /// <summary>
-    /// Performs a Cartesian join on a collection, creating all possible pairs.
+    ///     Performs a Cartesian join on a collection, creating all possible pairs.
     /// </summary>
     /// <typeparam name="T">The output type.</typeparam>
     /// <typeparam name="Tg">The input collection element type.</typeparam>
@@ -20,7 +20,7 @@ public static class BaseExtension
     }
 
     /// <summary>
-    /// Asynchronously iterates over a collection, applying an async function to each element.
+    ///     Asynchronously iterates over a collection, applying an async function to each element.
     /// </summary>
     /// <typeparam name="T">The input element type.</typeparam>
     /// <typeparam name="TOut">The output element type.</typeparam>
@@ -31,9 +31,9 @@ public static class BaseExtension
     {
         List<TOut> list = new();
 
-        foreach (T item in data)
+        foreach (var item in data)
         {
-            TOut result = await func(item);
+            var result = await func(item);
             list.Add(result);
         }
 
@@ -41,29 +41,23 @@ public static class BaseExtension
     }
 
     /// <summary>
-    /// Executes an action for each element in the collection.
+    ///     Executes an action for each element in the collection.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
     /// <param name="data">The collection to iterate.</param>
     /// <param name="action">The action to execute for each element.</param>
     public static void ForEach<T>(this IEnumerable<T> data, Action<T> action)
     {
-        foreach (T item in data)
-        {
-            action(item);
-        }
+        foreach (var item in data) action(item);
     }
 
     /// <summary>
-    /// Executes an action a specified number of times.
+    ///     Executes an action a specified number of times.
     /// </summary>
     /// <param name="num">The number of times to execute the action.</param>
     /// <param name="f">The action to execute.</param>
     public static void For(this int num, Action f)
     {
-        for (int i = 0; i < num; i++)
-        {
-            f.Invoke();
-        }
+        for (var i = 0; i < num; i++) f.Invoke();
     }
 }

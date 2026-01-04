@@ -1,15 +1,14 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Application.Common.Helper;
 
 /// <summary>
-/// Provides helper methods for generating handler state information for logging and debugging.
+///     Provides helper methods for generating handler state information for logging and debugging.
 /// </summary>
 public static class HandlerStateHelper
 {
     /// <summary>
-    /// Generates a JSON string representation of all public and private fields and properties of the handler.
+    ///     Generates a JSON string representation of all public and private fields and properties of the handler.
     /// </summary>
     /// <typeparam name="THandler">The handler type.</typeparam>
     /// <param name="handler">The handler instance.</param>
@@ -18,38 +17,35 @@ public static class HandlerStateHelper
     {
         try
         {
-            string json = JsonSerializer.Serialize(handler);
+            var json = JsonSerializer.Serialize(handler);
             return json;
         }
         catch (Exception exception)
         {
-            string state = $"""
-                            ERROR IN STATE GENERATOR HAPPENED
-                            HANDLER TYPE : {typeof(THandler)}
-                            ERROR MESSAGE : {exception.Message}
-                            POSSIBLE HANDLER REQUEST DATA : {GetHandlerRequestInfo(handler)}
-                            STACK TRACE : {exception.StackTrace}
-                            """;
+            var state = $"""
+                         ERROR IN STATE GENERATOR HAPPENED
+                         HANDLER TYPE : {typeof(THandler)}
+                         ERROR MESSAGE : {exception.Message}
+                         POSSIBLE HANDLER REQUEST DATA : {GetHandlerRequestInfo(handler)}
+                         STACK TRACE : {exception.StackTrace}
+                         """;
 
             return state;
         }
     }
 
     /// <summary>
-    /// Attempts to retrieve and serialize the HandlerRequest property from the handler.
+    ///     Attempts to retrieve and serialize the HandlerRequest property from the handler.
     /// </summary>
     /// <typeparam name="THandler">The handler type.</typeparam>
     /// <param name="handler">The handler instance.</param>
     /// <returns>A JSON string of the handler request, or "ERROR" if retrieval or serialization fails.</returns>
     private static string GetHandlerRequestInfo<THandler>(THandler handler)
     {
-        PropertyInfo? request = typeof(THandler).GetProperty("HandlerRequest");
-        object? value = request?.GetValue(handler);
+        var request = typeof(THandler).GetProperty("HandlerRequest");
+        var value = request?.GetValue(handler);
 
-        if (request is null || value is null)
-        {
-            return "ERROR";
-        }
+        if (request is null || value is null) return "ERROR";
 
         try
         {

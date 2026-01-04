@@ -1,12 +1,12 @@
 ﻿namespace Application.Common.Util;
 
 /// <summary>
-/// Provides utility methods for string operations.
+///     Provides utility methods for string operations.
 /// </summary>
 public static class StringUtils
 {
     /// <summary>
-    /// Generates a stream from a string content.
+    ///     Generates a stream from a string content.
     /// </summary>
     /// <param name="s">The string to convert to a stream.</param>
     /// <returns>A stream containing the string content, positioned at the beginning.</returns>

@@ -3,18 +3,18 @@
 namespace Domain.Entities;
 
 /// <summary>
-/// Represents a conversation thread within a memory.
-/// A thread manages the sequence of prompts, plans, executions, and results.
+///     Represents a conversation thread within a memory.
+///     A thread manages the sequence of prompts, plans, executions, and results.
 /// </summary>
-public class MemoryThread : BaseEntity
+public class MemoryThread : BaseEntity, IMemoryAggregateRoot
 {
     /// <summary>
-    /// Gets or sets the title of the memory thread.
+    ///     Gets or sets the title of the memory thread.
     /// </summary>
     public string Title { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the collection of prompts associated with this thread.
+    ///     Gets or sets the collection of prompts associated with this thread.
     /// </summary>
     public IEnumerable<Prompt> Prompts { get; set; } = null!;
 }

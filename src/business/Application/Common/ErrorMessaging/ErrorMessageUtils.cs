@@ -6,32 +6,29 @@ using ErrorHandling.Helpers;
 namespace Application.Common.ErrorMessaging;
 
 /// <summary>
-/// Provides utilities for retrieving error messages from resource files.
+///     Provides utilities for retrieving error messages from resource files.
 /// </summary>
 public static class ErrorMessageUtils
 {
     /// <summary>
-    /// Gets the error message for an enum error code from application resource files.
+    ///     Gets the error message for an enum error code from application resource files.
     /// </summary>
     /// <typeparam name="TEnum">The enum type representing the error code.</typeparam>
     /// <param name="enum">The error code enum value.</param>
     /// <returns>The error message string, or NO-DESCRIPTION-FOUND if not found.</returns>
     public static string GetErrorMessage<TEnum>(TEnum @enum) where TEnum : Enum
     {
-        string value = ErrorCodeHelper.Format(Convert.ToInt32(@enum));
+        var value = ErrorCodeHelper.Format(Convert.ToInt32(@enum));
 
-        IEnumerable<Type> resources = typeof(IApplicationDomainMarkup).Assembly.GetTypes()
+        IEnumerable<Type> resources = typeof(IApplicationMarkup).Assembly.GetTypes()
             .Where(t => t.FullName!.EndsWith(ApplicationKeys.RESOURCE_FILE_SUFFIX));
 
-        foreach (Type resource in resources)
+        foreach (var resource in resources)
         {
             ResourceManager resourceManager = new(resource.FullName!, resource.Assembly);
-            string result = resourceManager.GetString(value, CultureInfo.CurrentCulture)!;
+            var result = resourceManager.GetString(value, CultureInfo.CurrentCulture)!;
 
-            if (string.IsNullOrEmpty(result))
-            {
-                continue;
-            }
+            if (string.IsNullOrEmpty(result)) continue;
 
             return result;
         }
