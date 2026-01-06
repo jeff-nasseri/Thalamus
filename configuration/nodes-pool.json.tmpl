@@ -1,0 +1,180 @@
+{
+  "nodes": [
+    {
+      "node_id": "node-001",
+      "node_name": "Jeff House Server",
+      "node_type": "physical_server",
+      "location": {
+        "country": "Netherlands",
+        "city": "Den Bosch",
+        "timezone": "Europe/Amsterdam"
+      },
+      "hardware": {
+        "manufacturer": "Custom Build",
+        "model": "Workstation Server",
+        "architecture": "x86_64",
+        "total_cpu_cores": 16,
+        "total_ram_gb": 64,
+        "total_storage_gb": 2000,
+        "network_interfaces": [
+          {
+            "interface_name": "eth0",
+            "mac_address": "00:1A:2B:3C:4D:5E",
+            "speed_mbps": 1000,
+            "type": "Ethernet"
+          }
+        ]
+      },
+      "network": {
+        "primary_ip": "192.168.1.10",
+        "subnet_mask": "255.255.255.0",
+        "gateway": "192.168.1.1",
+        "dns_servers": ["8.8.8.8", "1.1.1.1"],
+        "ipv6": "fe80::a1b2:c3d4:e5f6:7890"
+      },
+      "software": {
+        "hypervisor": {
+          "name": "Proxmox VE",
+          "version": "8.1"
+        },
+        "operating_system": "Debian 12",
+        "kernel_version": "6.2.16"
+      },
+      "virtual_machines": [
+        {
+          "vm_id": "vm-100",
+          "vm_name": "Windows Production VM",
+          "status": "running",
+          "hardware": {
+            "cpu_cores": 8,
+            "ram_gb": 32,
+            "storage_gb": 500,
+            "disk_type": "SSD"
+          },
+          "software": {
+            "os": "Windows Server 2022",
+            "os_version": "21H2",
+            "architecture": "x86_64"
+          },
+          "network": {
+            "ip_address": "192.168.1.100",
+            "subnet_mask": "255.255.255.0",
+            "gateway": "192.168.1.1",
+            "dns_servers": ["8.8.8.8", "1.1.1.1"],
+            "mac_address": "52:54:00:12:34:56",
+            "bandwidth_mbps": 1000
+          },
+          "firewall": {
+            "enabled": true,
+            "rules": [
+              {
+                "port": 22,
+                "protocol": "TCP",
+                "allowed_ips": ["10.0.0.0/8", "172.16.0.0/12"]
+              },
+              {
+                "port": 3389,
+                "protocol": "TCP",
+                "allowed_ips": ["192.168.1.0/24"]
+              }
+            ]
+          }
+        },
+        {
+          "vm_id": "vm-101",
+          "vm_name": "Linux Development VM",
+          "status": "running",
+          "hardware": {
+            "cpu_cores": 4,
+            "ram_gb": 16,
+            "storage_gb": 250,
+            "disk_type": "NVMe"
+          },
+          "software": {
+            "os": "Ubuntu",
+            "os_version": "22.04 LTS",
+            "architecture": "x86_64",
+            "kernel_version": "5.15.0"
+          },
+          "network": {
+            "ip_address": "192.168.1.101",
+            "subnet_mask": "255.255.255.0",
+            "gateway": "192.168.1.1",
+            "dns_servers": ["8.8.8.8", "1.1.1.1"],
+            "mac_address": "52:54:00:12:34:57",
+            "bandwidth_mbps": 1000
+          },
+          "firewall": {
+            "enabled": true,
+            "rules": [
+              {
+                "port": 22,
+                "protocol": "TCP",
+                "allowed_ips": ["10.0.0.0/8"]
+              },
+              {
+                "port": 8080,
+                "protocol": "TCP",
+                "allowed_ips": ["192.168.1.0/24"]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "node-002",
+      "node_name": "Laboratory Microscope",
+      "node_type": "embedded_device",
+      "location": {
+        "country": "Netherlands",
+        "city": "Den Bosch",
+        "timezone": "Europe/Amsterdam"
+      },
+      "hardware": {
+        "manufacturer": "Zeiss",
+        "model": "Axio Observer",
+        "architecture": "ARM64",
+        "cpu_cores": 2,
+        "ram_mb": 2048,
+        "storage_gb": 32,
+        "network_interfaces": [
+          {
+            "interface_name": "eth0",
+            "mac_address": "A1:B2:C3:D4:E5:F6",
+            "speed_mbps": 100,
+            "type": "Ethernet"
+          }
+        ]
+      },
+      "software": {
+        "os": "Embedded Linux",
+        "os_version": "Yocto 4.0",
+        "kernel_version": "5.10.0",
+        "architecture": "aarch64"
+      },
+      "network": {
+        "ip_address": "192.168.1.150",
+        "subnet_mask": "255.255.255.0",
+        "gateway": "192.168.1.1",
+        "dns_servers": ["192.168.1.1"],
+        "connection_type": "Ethernet"
+      },
+      "firewall": {
+        "enabled": true,
+        "rules": [
+          {
+            "port": 22,
+            "protocol": "TCP",
+            "allowed_ips": ["192.168.1.0/24"]
+          },
+          {
+            "port": 8080,
+            "protocol": "TCP",
+            "allowed_ips": ["192.168.1.0/24"]
+          }
+        ]
+      }
+    }
+  ]
+}
