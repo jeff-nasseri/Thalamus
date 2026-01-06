@@ -6,7 +6,6 @@ using Application.Services.Ip;
 using ErrorHandling;
 using ErrorHandling.Enums;
 using ErrorHandling.Helpers;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -58,7 +57,7 @@ public class CommonErrorsPipelineBehavior<TRequest, TResponse> : IPipelineBehavi
         _logger.LogDebug("HANDLER.REQUEST.DETAILS --- {HandlerCode} ({HandlerName}) --- {Request}", handlerNumber,
             handlerCode, request);
 
-        List<ValidationFailure> errorList = await _requestValidator.ValidateAsync(request, cancellationToken);
+        var errorList = await _requestValidator.ValidateAsync(request, cancellationToken);
 
         TResponse response;
 

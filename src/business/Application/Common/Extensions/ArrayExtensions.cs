@@ -15,7 +15,7 @@ public static class ArrayExtensions
     /// <returns>An array of string representations of the enum values.</returns>
     public static string[] ToStringArray<TEnum>(this IEnumerable<TEnum> enums) where TEnum : Enum
     {
-        string[] result = enums.Select(e => e.ToString()).ToArray();
+        var result = enums.Select(e => e.ToString()).ToArray();
         return result;
     }
 

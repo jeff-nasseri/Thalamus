@@ -1,6 +1,5 @@
 ﻿using Application.Common.Helper;
 using Application.Common.Util;
-using ErrorHandling.Enums;
 using ErrorHandling.Helpers;
 using Microsoft.Extensions.Logging;
 
@@ -37,11 +36,11 @@ public static class LoggerExtensions
     /// <param name="args">Optional message formatting arguments.</param>
     public static void LogError(this ILogger logger, Enum error, string? message, params object?[] args)
     {
-        (BackendErrorType Type, IEnumerable<ServerErrorGroup> Groups, IEnumerable<ErrorResponsibilityTeam> Teams)
+        var
             detail =
                 ErrorTypeHelper.ModifyError(error);
 
-        IDictionary<string, object> tags =
+        var tags =
             LoggerUtils.GenerateRequiredErrorLogTags(error, detail.Type, detail.Teams, detail.Groups);
 
         using var scope = logger.BeginScope(tags);
@@ -59,14 +58,14 @@ public static class LoggerExtensions
     /// <param name="args">Optional message formatting arguments.</param>
     public static void LogError(this ILogger logger, object @this, Enum error, string? message, params object?[] args)
     {
-        (BackendErrorType Type, IEnumerable<ServerErrorGroup> Groups, IEnumerable<ErrorResponsibilityTeam> Teams)
+        var
             detail =
                 ErrorTypeHelper.ModifyError(error);
 
         message += " --- State : {State}";
         args = args.Append(HandlerStateHelper.GenerateHandlerState(@this)).ToArray();
 
-        IDictionary<string, object> tags =
+        var tags =
             LoggerUtils.GenerateRequiredErrorLogTags(error, detail.Type, detail.Teams, detail.Groups);
 
         using var scope = logger.BeginScope(tags);
@@ -85,11 +84,11 @@ public static class LoggerExtensions
     public static void LogError(this ILogger logger, Exception? exception, Enum error, string? message,
         params object?[] args)
     {
-        (BackendErrorType Type, IEnumerable<ServerErrorGroup> Groups, IEnumerable<ErrorResponsibilityTeam> Teams)
+        var
             detail =
                 ErrorTypeHelper.ModifyError(error);
 
-        IDictionary<string, object> tags =
+        var tags =
             LoggerUtils.GenerateRequiredErrorLogTags(error, detail.Type, detail.Teams, detail.Groups);
 
         using var scope = logger.BeginScope(tags);
@@ -109,14 +108,14 @@ public static class LoggerExtensions
     public static void LogError(this ILogger logger, Exception? exception, object @this, Enum error, string? message,
         params object?[] args)
     {
-        (BackendErrorType Type, IEnumerable<ServerErrorGroup> Groups, IEnumerable<ErrorResponsibilityTeam> Teams)
+        var
             detail =
                 ErrorTypeHelper.ModifyError(error);
 
         message += " --- State : {State}";
         args = args.Append(HandlerStateHelper.GenerateHandlerState(@this)).ToArray();
 
-        IDictionary<string, object> tags =
+        var tags =
             LoggerUtils.GenerateRequiredErrorLogTags(error, detail.Type, detail.Teams, detail.Groups);
 
         using var scope = logger.BeginScope(tags);

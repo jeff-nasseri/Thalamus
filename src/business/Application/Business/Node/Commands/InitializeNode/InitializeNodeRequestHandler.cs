@@ -3,14 +3,14 @@ using Application.Common.Dtos;
 using ErrorHandling;
 using MediatR;
 
-namespace Application.Business.Agent.Commands.InitializeAgent;
+namespace Application.Business.Node.Commands.InitializeNode;
 
 /// <summary>
 ///     Handles the initialization of multiple agents in the system.
 ///     Processes agent initialization requests and coordinates agent creation.
 /// </summary>
 [IdempotentHandler]
-public class InitializeAgentsRequestHandler : IRequestHandler<InitializeAgentsRequest, Response<IEnumerable<AgentDto>>>
+public class InitializeNodeRequestHandler : IRequestHandler<InitializeNodeRequest, Response<IEnumerable<AgentDto>>>
 {
     /// <summary>
     ///     Handles the agent initialization request.
@@ -19,7 +19,7 @@ public class InitializeAgentsRequestHandler : IRequestHandler<InitializeAgentsRe
     /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation, containing the response with initialized agents.</returns>
     /// <exception cref="NotImplementedException">This method is not yet implemented.</exception>
-    public Task<Response<IEnumerable<AgentDto>>> Handle(InitializeAgentsRequest request,
+    public Task<Response<IEnumerable<AgentDto>>> Handle(InitializeNodeRequest request,
         CancellationToken cancellationToken)
     {
         throw new NotImplementedException();

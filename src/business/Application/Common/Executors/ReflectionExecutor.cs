@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using Application.Common.Attributes;
-using Application.Common.Models;
+using Application.Common.Models.Handler;
 using ErrorHandling;
 using ErrorHandling.Attributes;
 using MediatR;
@@ -43,7 +43,7 @@ public class ReflectionExecutor<TRequest, TResponse, TRequestHandler>
         var steps = typeof(TRequestHandler).GetMethods()
             .Where(m => m.GetCustomAttribute<HandlerStepAttribute>() != null).ToList();
 
-        List<HandlerStepModel> handlerStepModels = steps.Select(s => new HandlerStepModel
+        var handlerStepModels = steps.Select(s => new HandlerStepModel
         {
             Name = s.Name,
             Order = s.GetCustomAttribute<HandlerStepAttribute>()!.Order
@@ -70,7 +70,7 @@ public class ReflectionExecutor<TRequest, TResponse, TRequestHandler>
             }
             catch (Exception exception)
             {
-                IEnumerable<HandleExceptionAttribute> handleExceptionAttributes = methodInfo!
+                var handleExceptionAttributes = methodInfo!
                     .GetCustomAttributes<HandleExceptionAttribute>().Where(a => a.ExceptionType == exception.GetType());
 
                 foreach (var handleExceptionAttribute in handleExceptionAttributes)

@@ -6,4 +6,18 @@
 /// </summary>
 public enum HandlerCode
 {
+    /// <summary>
+    ///     Handler code for the InitializeAgents command.
+    /// </summary>
+    InitializeAgents = 01_01_01,
+    
+    /// <summary>
+    ///     Handler code for the InitializeMcp command.
+    /// </summary>
+    InitializeMcp = 01_02_01,
+    
+    /// <summary>
+    ///     Handler code for the InitializeNode command.
+    /// </summary>
+    InitializeNode = 01_03_01,
 }
