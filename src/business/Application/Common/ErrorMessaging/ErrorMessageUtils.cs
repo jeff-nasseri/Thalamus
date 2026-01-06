@@ -20,7 +20,7 @@ public static class ErrorMessageUtils
     {
         var value = ErrorCodeHelper.Format(Convert.ToInt32(@enum));
 
-        IEnumerable<Type> resources = typeof(IApplicationMarkup).Assembly.GetTypes()
+        var resources = typeof(IApplicationMarkup).Assembly.GetTypes()
             .Where(t => t.FullName!.EndsWith(ApplicationKeys.RESOURCE_FILE_SUFFIX));
 
         foreach (var resource in resources)

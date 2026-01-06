@@ -15,7 +15,7 @@ public static class BaseExtension
     /// <returns>An enumerable of all possible pairs transformed by the make function.</returns>
     public static IEnumerable<T> JoinEach<T, Tg>(this IEnumerable<Tg> data, Func<Tg, Tg, T> make)
     {
-        List<Tg> enumerable = data.ToList();
+        var enumerable = data.ToList();
         return (from item in enumerable from item2 in enumerable select make(item, item2)).ToList();
     }
 

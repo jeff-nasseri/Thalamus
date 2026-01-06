@@ -26,13 +26,13 @@ public class LoggerUtils
     {
         IDictionary<string, object> dict = new Dictionary<string, object>();
 
-        IEnumerable<ErrorResponsibilityDetailAttribute> data =
+        var data =
             teams.Select(EnumHelper<ErrorResponsibilityDetailAttribute, ErrorResponsibilityTeam>.GetCustomAttribute);
 
         var teamStr = string.Join(',', data.Select(d => d.Title));
         dict.Add(ErrorLoggerKeys.RESPONSIBLE_TEAMS, teamStr);
 
-        IEnumerable<string> names = groups.Select(g => g.GetName());
+        var names = groups.Select(g => g.GetName());
         var groupTagStr = string.Join(", ", names);
 
         dict.Add(ErrorLoggerKeys.ERROR_GROUPS, groupTagStr);
