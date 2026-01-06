@@ -1,5 +1,5 @@
 using Application.Common.Dtos;
-using Application.Settings.Configuration.Agent;
+using Application.Services.Agent;
 
 namespace Infrastructure;
 
