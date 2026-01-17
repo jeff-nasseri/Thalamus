@@ -1,33 +1,37 @@
 namespace ErrorHandling;
 
 /// <summary>
-/// Represents a non-generic response structure that indicates success or failure.
+///     Represents a non-generic response structure that indicates success or failure.
 /// </summary>
-public readonly record struct Response : IResponse
+public class Response : IResponse
 {
-    private Response(Error error)
+    protected Response(Error error) : this()
     {
         Success = false;
         Error = error;
     }
 
+    protected Response()
+    {
+    }
+
     /// <summary>
-    /// Gets or initializes the optional data associated with the response.
+    ///     Gets or initializes the optional data associated with the response.
     /// </summary>
     public object? Data { get; init; } = null;
 
     /// <summary>
-    /// Gets or initializes a value indicating whether the operation was successful.
+    ///     Gets or initializes a value indicating whether the operation was successful.
     /// </summary>
     public bool Success { get; init; }
 
     /// <summary>
-    /// Gets or initializes the error information if the operation failed.
+    ///     Gets or initializes the error information if the operation failed.
     /// </summary>
-    public Error? Error { get; init; } = null;
+    public Error? Error { get; init; }
 
     /// <summary>
-    /// Implicitly converts an <see cref="Error"/> to a failed <see cref="Response"/>.
+    ///     Implicitly converts an <see cref="Error" /> to a failed <see cref="Response" />.
     /// </summary>
     /// <param name="error">The error to convert.</param>
     public static implicit operator Response(Error error)
@@ -36,7 +40,7 @@ public readonly record struct Response : IResponse
     }
 
     /// <summary>
-    /// Implicitly converts an error code enum to a failed <see cref="Response"/>.
+    ///     Implicitly converts an error code enum to a failed <see cref="Response" />.
     /// </summary>
     /// <param name="code">The error code enum to convert.</param>
     public static implicit operator Response(Enum code)
@@ -45,16 +49,16 @@ public readonly record struct Response : IResponse
     }
 
     /// <summary>
-    /// Creates a successful response.
+    ///     Creates a successful response.
     /// </summary>
-    /// <returns>A new <see cref="Response"/> indicating success.</returns>
+    /// <returns>A new <see cref="Response" /> indicating success.</returns>
     public static Response Successful()
     {
         return new Response { Success = true };
     }
 
     /// <summary>
-    /// Attempts to get the error from the response.
+    ///     Attempts to get the error from the response.
     /// </summary>
     /// <param name="error">The error if present; otherwise, null.</param>
     /// <returns>True if an error exists; otherwise, false.</returns>
@@ -66,40 +70,40 @@ public readonly record struct Response : IResponse
 }
 
 /// <summary>
-/// Represents a generic response structure that contains typed data and indicates success or failure.
+///     Represents a generic response structure that contains typed data and indicates success or failure.
 /// </summary>
 /// <typeparam name="TData">The type of data returned on success.</typeparam>
-public readonly record struct Response<TData> : IResponse<TData>
+public class Response<TData> : IResponse<TData>
 {
-    private Response(Error error)
+    protected Response(Error error)
     {
         Success = false;
         Error = error;
     }
 
-    private Response(TData? value)
+    protected Response(TData? value)
     {
         Success = true;
         Data = value;
     }
 
     /// <summary>
-    /// Gets or initializes a value indicating whether the operation was successful.
+    ///     Gets or initializes a value indicating whether the operation was successful.
     /// </summary>
     public bool Success { get; init; }
 
     /// <summary>
-    /// Gets the data returned by the operation.
+    ///     Gets the data returned by the operation.
     /// </summary>
-    public TData? Data { get; } = default;
+    public TData? Data { get; }
 
     /// <summary>
-    /// Gets or initializes the error information if the operation failed.
+    ///     Gets or initializes the error information if the operation failed.
     /// </summary>
-    public Error? Error { get; init; } = null;
+    public Error? Error { get; init; }
 
     /// <summary>
-    /// Implicitly converts typed data to a successful <see cref="Response{TData}"/>.
+    ///     Implicitly converts typed data to a successful <see cref="Response{TData}" />.
     /// </summary>
     /// <param name="value">The data value to convert.</param>
     public static implicit operator Response<TData>(TData value)
@@ -108,7 +112,7 @@ public readonly record struct Response<TData> : IResponse<TData>
     }
 
     /// <summary>
-    /// Implicitly converts an <see cref="Error"/> to a failed <see cref="Response{TData}"/>.
+    ///     Implicitly converts an <see cref="Error" /> to a failed <see cref="Response{TData}" />.
     /// </summary>
     /// <param name="error">The error to convert.</param>
     public static implicit operator Response<TData>(Error error)
@@ -117,7 +121,7 @@ public readonly record struct Response<TData> : IResponse<TData>
     }
 
     /// <summary>
-    /// Implicitly converts an error code enum to a failed <see cref="Response{TData}"/>.
+    ///     Implicitly converts an error code enum to a failed <see cref="Response{TData}" />.
     /// </summary>
     /// <param name="code">The error code enum to convert.</param>
     public static implicit operator Response<TData>(Enum code)

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace Thalamus.Web.Middlewares;
 
 /// <summary>
-/// Middleware for logging authentication and authorization errors.
+///     Middleware for logging authentication and authorization errors.
 /// </summary>
 public class ErrorLoggingMiddleware
 {
@@ -12,7 +12,7 @@ public class ErrorLoggingMiddleware
     private readonly RequestDelegate _next;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ErrorLoggingMiddleware"/> class.
+    ///     Initializes a new instance of the <see cref="ErrorLoggingMiddleware" /> class.
     /// </summary>
     /// <param name="next">The next middleware in the pipeline.</param>
     /// <param name="logger">Logger instance for recording errors.</param>
@@ -23,7 +23,7 @@ public class ErrorLoggingMiddleware
     }
 
     /// <summary>
-    /// Invokes the middleware to process the HTTP request and log authorization errors.
+    ///     Invokes the middleware to process the HTTP request and log authorization errors.
     /// </summary>
     /// <param name="httpContext">The HTTP context for the current request.</param>
     public async Task InvokeAsync(HttpContext httpContext)
@@ -34,7 +34,7 @@ public class ErrorLoggingMiddleware
         {
             case 401:
             case 403:
-                string ipAddress = "NAN";
+                var ipAddress = "NAN";
                 string? authorizationHeader = httpContext.Request.Headers["Authorization"];
 
                 _logger.LogWarning(

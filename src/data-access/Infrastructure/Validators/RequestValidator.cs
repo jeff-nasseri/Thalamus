@@ -5,7 +5,7 @@ using FluentValidation.Results;
 namespace Infrastructure.Validators;
 
 /// <summary>
-/// Generic request validator that aggregates and executes multiple FluentValidation validators.
+///     Generic request validator that aggregates and executes multiple FluentValidation validators.
 /// </summary>
 /// <typeparam name="TRequest">The type of request to validate.</typeparam>
 public class RequestValidator<TRequest> : IRequestValidator<TRequest>
@@ -13,7 +13,7 @@ public class RequestValidator<TRequest> : IRequestValidator<TRequest>
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RequestValidator{TRequest}"/> class.
+    ///     Initializes a new instance of the <see cref="RequestValidator{TRequest}" /> class.
     /// </summary>
     /// <param name="validators">The collection of validators to execute.</param>
     public RequestValidator(IEnumerable<IValidator<TRequest>> validators)
@@ -22,7 +22,7 @@ public class RequestValidator<TRequest> : IRequestValidator<TRequest>
     }
 
     /// <summary>
-    /// Validates the specified request asynchronously using all registered validators.
+    ///     Validates the specified request asynchronously using all registered validators.
     /// </summary>
     /// <param name="request">The request to validate.</param>
     /// <param name="cancellationToken">The cancellation token.</param>

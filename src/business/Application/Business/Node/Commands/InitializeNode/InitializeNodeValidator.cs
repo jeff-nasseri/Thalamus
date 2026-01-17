@@ -5,7 +5,8 @@ namespace Application.Business.Node.Commands.InitializeNode;
 
 public class InitializeNodeValidator : IRequestValidator<InitializeNodeRequest>
 {
-    public Task<List<ValidationFailure>> ValidateAsync(InitializeNodeRequest request, CancellationToken cancellationToken)
+    public Task<List<ValidationFailure>> ValidateAsync(InitializeNodeRequest request,
+        CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

@@ -5,7 +5,8 @@ namespace Application.Business.Agent.Commands.InitializeAgent;
 
 public class InitializeAgentsValidator : IRequestValidator<InitializeAgentsRequest>
 {
-    public Task<List<ValidationFailure>> ValidateAsync(InitializeAgentsRequest request, CancellationToken cancellationToken)
+    public Task<List<ValidationFailure>> ValidateAsync(InitializeAgentsRequest request,
+        CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

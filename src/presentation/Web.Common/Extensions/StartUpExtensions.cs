@@ -1,6 +1,4 @@
 ﻿using Application.Common.Validators;
-using Thalamus.Web.Logging.Sentry;
-using Thalamus.Web.Swagger;
 using Infrastructure.DependencyInjection;
 using Infrastructure.Services.Ip;
 using Infrastructure.Validators;
@@ -14,17 +12,19 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Thalamus.Web.Logging.Sentry;
+using Thalamus.Web.Swagger;
 using DependencyInjection = Application.DependencyInjection;
 
 namespace Thalamus.Web.Extensions;
 
 /// <summary>
-/// Provides extension methods for configuring application services during startup.
+///     Provides extension methods for configuring application services during startup.
 /// </summary>
 public static class StartUpExtensions
 {
     /// <summary>
-    /// Configures custom Swagger documentation services with client-based API description provider.
+    ///     Configures custom Swagger documentation services with client-based API description provider.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <returns>The modified service collection.</returns>
@@ -38,7 +38,7 @@ public static class StartUpExtensions
     }
 
     /// <summary>
-    /// Configures data protection services with AES-256-CBC encryption and HMACSHA256 validation.
+    ///     Configures data protection services with AES-256-CBC encryption and HMACSHA256 validation.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <returns>The modified service collection.</returns>
@@ -55,7 +55,7 @@ public static class StartUpExtensions
     }
 
     /// <summary>
-    /// Configures MVC controllers with API versioning and endpoints explorer.
+    ///     Configures MVC controllers with API versioning and endpoints explorer.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <returns>The modified service collection.</returns>
@@ -83,7 +83,7 @@ public static class StartUpExtensions
     }
 
     /// <summary>
-    /// Configures MediatR with request validators and module registries.
+    ///     Configures MediatR with request validators and module registries.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <returns>The modified service collection.</returns>
@@ -97,13 +97,13 @@ public static class StartUpExtensions
     }
 
     /// <summary>
-    /// Configures Swagger UI middleware for API documentation.
+    ///     Configures Swagger UI middleware for API documentation.
     /// </summary>
     /// <param name="app">Application builder to configure.</param>
     /// <returns>The modified application builder.</returns>
     public static IApplicationBuilder SetupSwaggerUi(this IApplicationBuilder app)
     {
-        IApiDescriptionGroupCollectionProvider apiDescriptionGroupCollectionProvider =
+        var apiDescriptionGroupCollectionProvider =
             app.ApplicationServices.GetRequiredService<IApiDescriptionGroupCollectionProvider>();
         app.UseCustomSwaggerUi(apiDescriptionGroupCollectionProvider);
 
@@ -111,7 +111,7 @@ public static class StartUpExtensions
     }
 
     /// <summary>
-    /// Configures Keycloak authentication with default options.
+    ///     Configures Keycloak authentication with default options.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <returns>The modified service collection.</returns>
@@ -123,18 +123,19 @@ public static class StartUpExtensions
     }
 
     /// <summary>
-    /// Configures Keycloak authentication with custom authorization options.
+    ///     Configures Keycloak authentication with custom authorization options.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <param name="configure">Action to configure authorization options.</param>
     /// <returns>The modified service collection.</returns>
-    public static IServiceCollection SetupKeycloak(this IServiceCollection services, Action<AuthorizationOptions> configure)
+    public static IServiceCollection SetupKeycloak(this IServiceCollection services,
+        Action<AuthorizationOptions> configure)
     {
         return services;
     }
 
     /// <summary>
-    /// Registers custom Sentry event processor for enhanced error tracking.
+    ///     Registers custom Sentry event processor for enhanced error tracking.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <returns>The modified service collection.</returns>
@@ -143,5 +144,4 @@ public static class StartUpExtensions
         services.AddSingleton<CustomSentryEventProcessor>();
         return services;
     }
-
 }

@@ -1,0 +1,171 @@
+[
+  {
+    "Name": "thalamus",
+    "ShortName": "",
+    "Description": "Thalamus CLI - Main entry point for the agent management system",
+    "Category": "root",
+    "AcceptedArgs": [
+      {
+        "Name": "help",
+        "ShortName": "",
+        "Description": "Display help information and available commands",
+        "Category": "info",
+        "AcceptedArgs": null,
+        "PotentialValue": null
+      },
+      {
+        "Name": "version",
+        "ShortName": "",
+        "Description": "Display version information",
+        "Category": "info",
+        "AcceptedArgs": null,
+        "PotentialValue": null
+      },
+      {
+        "Name": "configuration",
+        "ShortName": "",
+        "Description": "Manage Thalamus configuration settings",
+        "Category": "config",
+        "AcceptedArgs": [
+          {
+            "Name": "initialization",
+            "ShortName": "-i",
+            "Description": "Initialize configuration in data storage based on MCP, agent, and nodes configuration files",
+            "Category": "config",
+            "AcceptedArgs": [
+              {
+                "Name": "mcp",
+                "ShortName": "-m",
+                "Description": "Initialize MCP (Model Context Protocol) configuration",
+                "Category": "config",
+                "AcceptedArgs": null,
+                "PotentialValue": "path-to-mcp-config"
+              },
+              {
+                "Name": "agent",
+                "ShortName": "-a",
+                "Description": "Initialize agent configuration",
+                "Category": "config",
+                "AcceptedArgs": null,
+                "PotentialValue": "path-to-agent-config"
+              },
+              {
+                "Name": "node",
+                "ShortName": "-n",
+                "Description": "Initialize node configuration. Empty value defaults to '--all'",
+                "Category": "config",
+                "AcceptedArgs": null,
+                "PotentialValue": "node-identifier-or-empty-for-all"
+              }
+            ],
+            "PotentialValue": null
+          }
+        ],
+        "PotentialValue": null
+      },
+      {
+        "Name": "dashboard",
+        "ShortName": "",
+        "Description": "Setup and manage the web dashboard UI",
+        "Category": "ui",
+        "AcceptedArgs": [
+          {
+            "Name": "url",
+            "ShortName": "",
+            "Description": "Specify the dashboard URL. Empty value defaults to 'localhost:5055'",
+            "Category": "ui",
+            "AcceptedArgs": null,
+            "PotentialValue": "url-or-empty-for-default"
+          }
+        ],
+        "PotentialValue": null
+      },
+      {
+        "Name": "memory",
+        "ShortName": "",
+        "Description": "Access and manage Thalamus application memory",
+        "Category": "data",
+        "AcceptedArgs": [
+          {
+            "Name": "filter",
+            "ShortName": "",
+            "Description": "Filter memory entries. Empty value defaults to '--all'",
+            "Category": "data",
+            "AcceptedArgs": [
+              {
+                "Name": "keywords",
+                "ShortName": "",
+                "Description": "Filter by keywords",
+                "Category": "data",
+                "AcceptedArgs": null,
+                "PotentialValue": "comma-separated-keywords"
+              },
+              {
+                "Name": "title",
+                "ShortName": "",
+                "Description": "Filter by title",
+                "Category": "data",
+                "AcceptedArgs": null,
+                "PotentialValue": "title-string"
+              }
+            ],
+            "PotentialValue": "filter-criteria-or-empty-for-all"
+          },
+          {
+            "Name": "export",
+            "ShortName": "",
+            "Description": "Export memory data to file. Can be combined with filter options",
+            "Category": "data",
+            "AcceptedArgs": [
+              {
+                "Name": "format",
+                "ShortName": "",
+                "Description": "Specify export format. Empty value defaults to '--all'",
+                "Category": "data",
+                "AcceptedArgs": [
+                  {
+                    "Name": "json",
+                    "ShortName": "",
+                    "Description": "Export in JSON format",
+                    "Category": "data",
+                    "AcceptedArgs": null,
+                    "PotentialValue": null
+                  }
+                ],
+                "PotentialValue": "format-type-or-empty-for-all"
+              }
+            ],
+            "PotentialValue": "path-to-export-file-or-empty-for-default"
+          }
+        ],
+        "PotentialValue": null
+      },
+      {
+        "Name": "prompt",
+        "ShortName": "",
+        "Description": "Execute prompts and communicate with the agent",
+        "Category": "execution",
+        "AcceptedArgs": [
+          {
+            "Name": "background",
+            "ShortName": "-b",
+            "Description": "Run prompt as background job. Empty value defaults to 'waiting' (synchronous execution)",
+            "Category": "execution",
+            "AcceptedArgs": null,
+            "PotentialValue": "true-or-empty-for-waiting"
+          },
+          {
+            "Name": "message",
+            "ShortName": "-m",
+            "Description": "The prompt message to execute (required)",
+            "Category": "execution",
+            "AcceptedArgs": null,
+            "PotentialValue": "prompt-message-text"
+          }
+        ],
+        "PotentialValue": null
+      }
+    ],
+    "PotentialValue": null
+  }
+]

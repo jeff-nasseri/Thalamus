@@ -5,12 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Infrastructure.Services.Ip.Config;
 
 /// <summary>
-/// Configuration module for IP service dependency injection registration.
+///     Configuration module for IP service dependency injection registration.
 /// </summary>
 public class IpServiceConfiguration : IModuleConfiguration
 {
     /// <summary>
-    /// Registers IP service dependencies into the service collection.
+    ///     Registers IP service dependencies into the service collection.
     /// </summary>
     /// <param name="services">The service collection to register services into.</param>
     /// <returns>The service collection for method chaining.</returns>
