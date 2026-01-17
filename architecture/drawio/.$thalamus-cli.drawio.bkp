@@ -1,0 +1,19 @@
+<mxfile host="65bd71144e" pages="2">
+    <diagram id="5Oh0XG9yrBw848wXJNNI" name="One node style">
+        <mxGraphModel dx="1903" dy="1139" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="-Bz8tXAfWOTWPkEk7k_Y-7" value="Thalamus CLI" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;container=1;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="-40" y="50" width="103.5" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="-Bz8tXAfWOTWPkEk7k_Y-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="-Bz8tXAfWOTWPkEk7k_Y-14" target="-Bz8tXAfWOTWPkEk7k_Y-7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="-Bz8tXAfWOTWPkEk7k_Y-14" value="help/version" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="140" y="150" width="100" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

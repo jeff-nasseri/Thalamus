@@ -1,0 +1,216 @@
+Here's a revised and improved version of your prompt:
+
+---
+
+# Critical Error Handling Implementation Guide
+
+## Build Verification
+Ensure the `.sln` file builds successfully. If any build errors occur, troubleshoot and resolve them before proceeding.
+
+## Error Code Structure
+
+### Naming Convention
+Each command or query in the business folder **must** have a corresponding error codes file named `{CommandName}ErrorCodes.cs`.
+
+**Example:**
+```
+B:\root\ops\Thalamus\src\business\Application\Business\Agent\Commands\InitializeAgent\InitializeAgentsErrorCodes.cs
+```
+
+### Error Code Implementation
+- Error codes are defined as **Enums**
+- Each error code must include an attribute specifying the `HandlerCode`
+- Handler codes are defined in: `B:\root\ops\Thalamus\src\business\ErrorHandling\Enums\HandlerCode.cs`
+- The `HandlerCode` attribute clarifies the group/category of the error code
+
+### Returning Error Codes
+Since the Response class is implemented at `B:\root\ops\Thalamus\src\business\ErrorHandling\Response.cs`, you can **return error codes directly** instead of calling `Response.Failure()`.
+
+## Logging Requirements
+
+### Handler and Service Layers
+- **Inject `ILogger<T>`** into both handlers and services
+- **Log all failures** when they occur
+- Use structured logging with relevant context
+
+### Service Layer Error Codes
+Services in the infrastructure layer may define their own error code Enums, placed in the root directory of that service category (immediately behind the service folder).
+
+## Single Responsibility Pattern
+
+### Breaking Down the Handle Method
+Following the **Single Responsibility Principle**, break down the `Handle` function into multiple discrete steps:
+- Each step/function should have its **own try/catch block**
+- This ensures granular error handling and logging
+- **Exception:** Simple handlers that only perform a single insert operation may keep logic inline
+
+---
+
+## Reference Implementation Example
+
+Below is a reference implementation from another project demonstrating proper error handling patterns:
+
+```csharp
+using Application.Common.Attributes;
+using Application.Common.Dtos;
+using Application.Common.Extensions;
+using Application.Storage.Repository.Contracts;
+using AutoMapper;
+using Domain.Entities;
+using ErrorHandling;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+namespace Application.Business.Mcp.Commands.InitializeMcp;
+
+/// <summary>
+///     Handles the initialization of multiple MCP plugins in the system.
+///     Processes MCP plugin initialization requests and coordinates plugin creation.
+/// </summary>
+[IdempotentHandler]
+public class InitializeMcpRequestHandler : IRequestHandler<InitializeMcpRequest, Response<IEnumerable<McpPluginDto>>>
+{
+    private readonly ILogger<InitializeMcpRequestHandler> _logger;
+    private readonly IEntityRepository<McpPlugin, Guid> _mcpPluginRepository;
+    private readonly IMapper _mapper;
+
+    public required InitializeMcpRequest HandlerRequest { get; set; }
+    public IEnumerable<McpPlugin>? MappedPlugins { get; set; }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InitializeMcpRequestHandler" /> class.
+    /// </summary>
+    /// <param name="logger">The logger for structured logging.</param>
+    /// <param name="mcpPluginRepository">The repository for MCP plugin persistence operations.</param>
+    /// <param name="mapper">AutoMapper instance for DTO to entity mapping.</param>
+    public InitializeMcpRequestHandler(
+        ILogger<InitializeMcpRequestHandler> logger,
+        IEntityRepository<McpPlugin, Guid> mcpPluginRepository,
+        IMapper mapper)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _mcpPluginRepository = mcpPluginRepository ?? throw new ArgumentNullException(nameof(mcpPluginRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    }
+
+    /// <summary>
+    ///     Handles the MCP plugin initialization request.
+    /// </summary>
+    /// <param name="request">The initialization request containing configuration data.</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous operation, containing the response with initialized MCP plugins.</returns>
+    public async Task<Response<IEnumerable<McpPluginDto>>> Handle(InitializeMcpRequest request,
+        CancellationToken cancellationToken)
+    {
+        HandlerRequest = request;
+
+        if ((await MapPluginsFromDtos()).TryGetError(out Error? mappingError))
+        {
+            return mappingError!.Value;
+        }
+
+        if ((await InsertPluginsToRepository()).TryGetError(out Error? insertError))
+        {
+            return insertError!.Value;
+        }
+
+        return MapPluginsToResponse();
+    }
+
+    private async Task<Response> MapPluginsFromDtos()
+    {
+        try
+        {
+            MappedPlugins = _mapper.Map<IEnumerable<McpPlugin>>(HandlerRequest.Dto.Plugins);
+
+            if (MappedPlugins != null && MappedPlugins.Any())
+            {
+                return Response.Successful();
+            }
+
+            InitializeMcpErrorCodes error = InitializeMcpErrorCodes.McpMappingFailed;
+            _logger.LogError(this, error,
+                "MCP_INITIALIZATION.MAPPING.ERROR --- Failed to map MCP plugins from DTOs. Plugin count: {count}",
+                HandlerRequest.Dto.Plugins?.Count() ?? 0);
+
+            return error;
+        }
+        catch (AutoMapperMappingException exception)
+        {
+            InitializeMcpErrorCodes error = InitializeMcpErrorCodes.McpMappingFailed;
+            _logger.LogError(exception, this, error,
+                "MCP_INITIALIZATION.MAPPING.EXCEPTION --- AutoMapper exception during MCP plugin mapping");
+
+            return error;
+        }
+        catch (Exception exception)
+        {
+            InitializeMcpErrorCodes error = InitializeMcpErrorCodes.UnknownInitializationError;
+            _logger.LogError(exception, this, error,
+                "MCP_INITIALIZATION.MAPPING.UNKNOWN --- Unexpected exception during MCP plugin mapping");
+
+            return error;
+        }
+    }
+
+    private async Task<Response> InsertPluginsToRepository()
+    {
+        try
+        {
+            await _mcpPluginRepository.InsertRange(MappedPlugins!);
+            return Response.Successful();
+        }
+        catch (DbUpdateException exception)
+        {
+            InitializeMcpErrorCodes error = InitializeMcpErrorCodes.McpInsertFailed;
+            _logger.LogError(exception, this, error,
+                "MCP_INITIALIZATION.INSERT.DB_EXCEPTION --- Database exception during MCP plugin insertion. Plugin count: {count}",
+                MappedPlugins?.Count() ?? 0);
+
+            return error;
+        }
+        catch (Exception exception)
+        {
+            InitializeMcpErrorCodes error = InitializeMcpErrorCodes.UnknownInitializationError;
+            _logger.LogError(exception, this, error,
+                "MCP_INITIALIZATION.INSERT.UNKNOWN --- Unexpected exception during MCP plugin insertion");
+
+            return error;
+        }
+    }
+
+    private Response<IEnumerable<McpPluginDto>> MapPluginsToResponse()
+    {
+        try
+        {
+            var pluginDtos = _mapper.Map<IEnumerable<McpPluginDto>>(MappedPlugins);
+            return (Response<IEnumerable<McpPluginDto>>)pluginDtos;
+        }
+        catch (AutoMapperMappingException exception)
+        {
+            InitializeMcpErrorCodes error = InitializeMcpErrorCodes.McpMappingFailed;
+            _logger.LogError(exception, this, error,
+                "MCP_INITIALIZATION.RESPONSE_MAPPING.EXCEPTION --- Failed to map MCP plugins to DTOs for response");
+
+            return error;
+        }
+        catch (Exception exception)
+        {
+            InitializeMcpErrorCodes error = InitializeMcpErrorCodes.UnknownInitializationError;
+            _logger.LogError(exception, this, error,
+                "MCP_INITIALIZATION.RESPONSE_MAPPING.UNKNOWN --- Unexpected exception during response mapping");
+
+            return error;
+        }
+    }
+}
+```
+
+---
+
+**Key Takeaways:**
+- Each step is isolated with its own error handling
+- Structured logging provides context for debugging
+- Error codes are returned directly
+- Single Responsibility Principle is maintained
