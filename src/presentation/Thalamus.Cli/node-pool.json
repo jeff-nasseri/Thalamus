@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    {
+      "registeredName": "JeffHouseServer",
+      "deviceInformation": {
+        "operatingSystem": "Debian 12",
+        "architecture": "x86_64",
+        "totalMemoryMB": 65536,
+        "processorCount": 16,
+        "machineName": "jeff-server-001",
+        "userName": "admin",
+        "is64BitOperatingSystem": true,
+        "is64BitProcess": true
+      },
+      "agents": []
+    },
+    {
+      "registeredName": "LaboratoryMicroscope",
+      "deviceInformation": {
+        "operatingSystem": "Embedded Linux Yocto 4.0",
+        "architecture": "ARM64",
+        "totalMemoryMB": 2048,
+        "processorCount": 2,
+        "machineName": "lab-microscope",
+        "userName": "operator",
+        "is64BitOperatingSystem": true,
+        "is64BitProcess": true
+      },
+      "agents": []
+    }
+  ]
+}
