@@ -1,6 +1,9 @@
+using Application.Common.Dtos;
+
 namespace Application.Business.Mcp.Commands.InitializeMcp;
 
 /// <summary>
-///     Data transfer object for agent initialization requests.
+///     Data transfer object for MCP plugin initialization requests.
 /// </summary>
-public record InitializeMcpRequestDto;
+/// <param name="Plugins">The collection of MCP plugins to initialize.</param>
+public record InitializeMcpRequestDto(IEnumerable<McpPluginDto> Plugins);
