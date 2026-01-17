@@ -1,6 +1,7 @@
 # Contributing to Thalamus
 
-Thank you for your interest in contributing to Thalamus! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Thalamus! This document provides guidelines and instructions for
+contributing to the project.
 
 ## Table of Contents
 
@@ -14,7 +15,8 @@ Thank you for your interest in contributing to Thalamus! This document provides 
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inclusive environment. Please be respectful and constructive in all interactions.
+We are committed to providing a welcoming and inclusive environment. Please be respectful and constructive in all
+interactions.
 
 ## Getting Started
 
@@ -182,10 +184,10 @@ when configuration is missing.
 2. Open a Pull Request on GitHub
 
 3. Fill out the PR template with:
-   - Clear description of changes
-   - Related issue numbers
-   - Screenshots (if UI changes)
-   - Testing performed
+    - Clear description of changes
+    - Related issue numbers
+    - Screenshots (if UI changes)
+    - Testing performed
 
 4. Wait for review and address feedback
 

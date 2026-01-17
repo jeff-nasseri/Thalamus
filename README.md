@@ -1,10 +1,12 @@
 # Thalamus
 
-A distributed multi-agent orchestration platform built with .NET, designed to coordinate intelligent agents across master-slave architecture for scalable AI application deployment.
+A distributed multi-agent orchestration platform built with .NET, designed to coordinate intelligent agents across
+master-slave architecture for scalable AI application deployment.
 
 ## Overview
 
-Thalamus provides a robust framework for deploying and managing AI agents in a distributed environment. It features a master node for coordination and slave agents for distributed workload execution.
+Thalamus provides a robust framework for deploying and managing AI agents in a distributed environment. It features a
+master node for coordination and slave agents for distributed workload execution.
 
 ## Features
 
