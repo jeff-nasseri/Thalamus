@@ -5,12 +5,12 @@ using Microsoft.OpenApi.Models;
 namespace Thalamus.Web.Swagger.Extensions;
 
 /// <summary>
-/// Provides extension methods for configuring JWT authentication in Swagger.
+///     Provides extension methods for configuring JWT authentication in Swagger.
 /// </summary>
 public static class AddJwtAuthenticationExtension
 {
     /// <summary>
-    /// Configures Swagger to support JWT Bearer authentication.
+    ///     Configures Swagger to support JWT Bearer authentication.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     /// <returns>The modified service collection.</returns>

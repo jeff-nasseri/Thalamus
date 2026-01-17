@@ -12,7 +12,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace Thalamus.Web.Swagger.Filters;
 
 /// <summary>
-/// Swagger operation filter that enriches API documentation with error codes and custom response schemas.
+///     Swagger operation filter that enriches API documentation with error codes and custom response schemas.
 /// </summary>
 public class ErrorCodeOperationFilter : IOperationFilter
 {
@@ -22,7 +22,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
     private readonly bool _useAllOfToExtendReferenceSchemas;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ErrorCodeOperationFilter"/> class.
+    ///     Initializes a new instance of the <see cref="ErrorCodeOperationFilter" /> class.
     /// </summary>
     /// <param name="options">Schema generator options.</param>
     public ErrorCodeOperationFilter(SchemaGeneratorOptions options)
@@ -37,21 +37,21 @@ public class ErrorCodeOperationFilter : IOperationFilter
     }
 
     /// <summary>
-    /// Applies the filter to enrich the operation with error code documentation.
+    ///     Applies the filter to enrich the operation with error code documentation.
     /// </summary>
     /// <param name="operation">The OpenAPI operation to modify.</param>
     /// <param name="context">The operation filter context.</param>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
-        string? responseName = operation.Responses.First().Value.Content.Values.First().Schema.Reference.Id;
+        var responseName = operation.Responses.First().Value.Content.Values.First().Schema.Reference.Id;
 
-        HandlerCode? handlerCode = context.ApiDescription.GetHandlerCode(out Type? requestType);
+        var handlerCode = context.ApiDescription.GetHandlerCode(out var requestType);
 
         if (handlerCode is not null && requestType is not null &&
-            _handlerCodes.TryGetValue(handlerCode.Value, out Type? errorCodesEnumType))
+            _handlerCodes.TryGetValue(handlerCode.Value, out var errorCodesEnumType))
         {
-            string requestName = requestType.Name;
-            string formattedHandlerCode = ((int)handlerCode).ToString().Insert(2, "_");
+            var requestName = requestType.Name;
+            var formattedHandlerCode = ((int)handlerCode).ToString().Insert(2, "_");
             operation.Summary = operation.Summary is null
                 ? formattedHandlerCode
                 : formattedHandlerCode + " — " + operation.Summary;
@@ -62,7 +62,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
     }
 
     /// <summary>
-    /// Overrides the response schema with custom error code schemas.
+    ///     Overrides the response schema with custom error code schemas.
     /// </summary>
     /// <param name="operation">The OpenAPI operation to modify.</param>
     /// <param name="context">The operation filter context.</param>
@@ -76,26 +76,26 @@ public class ErrorCodeOperationFilter : IOperationFilter
         string requestName,
         string responseName)
     {
-        OpenApiSchema rawErrorSchema = GetRawErrorSchema(context);
+        var rawErrorSchema = GetRawErrorSchema(context);
 
-        OpenApiSchema errorSchema = GenerateErrorSchema(context, rawErrorSchema, errorCodesEnumType, requestName);
+        var errorSchema = GenerateErrorSchema(context, rawErrorSchema, errorCodesEnumType, requestName);
         errorSchema = _useAllOfToExtendReferenceSchemas ? WrapWithAllOfSchemaType(errorSchema, true) : errorSchema;
 
-        OpenApiSchema? responseSchema =
-            context.SchemaRepository.Schemas.TryGetValue(responseName, out OpenApiSchema? foundSchema)
+        var responseSchema =
+            context.SchemaRepository.Schemas.TryGetValue(responseName, out var foundSchema)
                 ? foundSchema
                 : _deletedSchemas[responseName];
 
         if (responseName == nameof(Response))
         {
-            OpenApiSchema newResponseSchema =
+            var newResponseSchema =
                 ReplaceNonGenericResponseSchema(context, responseSchema, errorSchema, requestName);
 
             SetOperationResponseSchema(operation, newResponseSchema);
         }
         else
         {
-            OpenApiSchema newResponseSchema =
+            var newResponseSchema =
                 RenameResponseSchema(context, responseSchema, errorSchema, requestName, responseName);
 
             SetOperationResponseSchema(operation, newResponseSchema);
@@ -103,7 +103,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
     }
 
     /// <summary>
-    /// Sets the response schema for all responses in the operation.
+    ///     Sets the response schema for all responses in the operation.
     /// </summary>
     /// <param name="operation">The OpenAPI operation to modify.</param>
     /// <param name="specificResponseSchema">The schema to apply.</param>
@@ -111,13 +111,11 @@ public class ErrorCodeOperationFilter : IOperationFilter
     {
         foreach (KeyValuePair<string, OpenApiResponse> openApiResponse in operation.Responses)
         foreach (KeyValuePair<string, OpenApiMediaType> openApiMediaType in openApiResponse.Value.Content)
-        {
             openApiMediaType.Value.Schema = specificResponseSchema;
-        }
     }
 
     /// <summary>
-    /// Renames and modifies a response schema with the error schema.
+    ///     Renames and modifies a response schema with the error schema.
     /// </summary>
     /// <param name="context">The operation filter context.</param>
     /// <param name="responseSchema">The original response schema.</param>
@@ -136,23 +134,21 @@ public class ErrorCodeOperationFilter : IOperationFilter
         _deletedSchemas.TryAdd(responseName, responseSchema);
         OpenApiSchema newResponseSchema = new(responseSchema);
         newResponseSchema.Properties["error"] = errorSchema;
-        string schemaKey = Regex.Replace(requestName, "Request$", "Response");
+        var schemaKey = Regex.Replace(requestName, "Request$", "Response");
 
-        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out OpenApiSchema _))
-        {
+        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var _))
             return new OpenApiSchema
             {
                 Reference = new OpenApiReference { Type = ReferenceType.Schema, Id = schemaKey }
             };
-        }
 
-        OpenApiSchema? generatedResponseSchemaReference =
+        var generatedResponseSchemaReference =
             context.SchemaRepository.AddDefinition(schemaKey, newResponseSchema);
         return generatedResponseSchemaReference;
     }
 
     /// <summary>
-    /// Replaces a non-generic response schema with a version that includes the error schema.
+    ///     Replaces a non-generic response schema with a version that includes the error schema.
     /// </summary>
     /// <param name="context">The operation filter context.</param>
     /// <param name="responseSchema">The original response schema.</param>
@@ -167,23 +163,21 @@ public class ErrorCodeOperationFilter : IOperationFilter
     {
         OpenApiSchema complexResponseSchema = new(responseSchema);
         complexResponseSchema.Properties["error"] = errorSchema;
-        string schemaKey = Regex.Replace(requestName, "Request$", "Response");
+        var schemaKey = Regex.Replace(requestName, "Request$", "Response");
 
-        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out OpenApiSchema _))
-        {
+        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var _))
             return new OpenApiSchema
             {
                 Reference = new OpenApiReference { Type = ReferenceType.Schema, Id = schemaKey }
             };
-        }
 
-        OpenApiSchema? generatedResponseSchemaReference =
+        var generatedResponseSchemaReference =
             context.SchemaRepository.AddDefinition(schemaKey, complexResponseSchema);
         return generatedResponseSchemaReference;
     }
 
     /// <summary>
-    /// Generates an error schema specific to the request type.
+    ///     Generates an error schema specific to the request type.
     /// </summary>
     /// <param name="context">The operation filter context.</param>
     /// <param name="rawErrorSchema">The base error schema.</param>
@@ -197,32 +191,30 @@ public class ErrorCodeOperationFilter : IOperationFilter
         string requestName)
     {
         OpenApiSchema errorSchema = new(rawErrorSchema);
-        OpenApiSchema? errorCodesEnumSchema =
+        var errorCodesEnumSchema =
             context.SchemaGenerator.GenerateSchema(errorCodesEnumType, context.SchemaRepository);
         errorSchema.Properties["code"] =
             _useAllOfToExtendReferenceSchemas ? WrapWithAllOfSchemaType(errorCodesEnumSchema) : errorCodesEnumSchema;
-        string schemaKey = Regex.Replace(requestName, "Request$", "Error");
+        var schemaKey = Regex.Replace(requestName, "Request$", "Error");
 
-        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out OpenApiSchema _))
-        {
+        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var _))
             return new OpenApiSchema
             {
                 Reference = new OpenApiReference { Type = ReferenceType.Schema, Id = schemaKey }
             };
-        }
 
-        OpenApiSchema? errorSchemaReference = context.SchemaRepository.AddDefinition(schemaKey, errorSchema);
+        var errorSchemaReference = context.SchemaRepository.AddDefinition(schemaKey, errorSchema);
         return errorSchemaReference;
     }
 
     /// <summary>
-    /// Retrieves or generates the raw error schema.
+    ///     Retrieves or generates the raw error schema.
     /// </summary>
     /// <param name="context">The operation filter context.</param>
     /// <returns>The raw error schema.</returns>
     private OpenApiSchema GetRawErrorSchema(OperationFilterContext context)
     {
-        if (!context.SchemaRepository.Schemas.TryGetValue("Error", out OpenApiSchema? errorSchema))
+        if (!context.SchemaRepository.Schemas.TryGetValue("Error", out var errorSchema))
         {
             context.SchemaGenerator.GenerateSchema(typeof(Error), context.SchemaRepository);
             errorSchema = context.SchemaRepository.Schemas["Error"];
@@ -232,7 +224,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
     }
 
     /// <summary>
-    /// Wraps a schema with an allOf construct for schema extension.
+    ///     Wraps a schema with an allOf construct for schema extension.
     /// </summary>
     /// <param name="schema">The schema to wrap.</param>
     /// <param name="nullable">Whether the schema is nullable.</param>
@@ -252,7 +244,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
     }
 
     /// <summary>
-    /// Generates API description with error codes table in markdown format.
+    ///     Generates API description with error codes table in markdown format.
     /// </summary>
     /// <param name="errorType">The error enum type.</param>
     /// <returns>Markdown formatted description with error codes table.</returns>
@@ -265,9 +257,9 @@ public class ErrorCodeOperationFilter : IOperationFilter
                 Name = a.ToString()
             });
 
-        IEnumerable<string> tableRows = errorCodes.Select(errorCode =>
+        var tableRows = errorCodes.Select(errorCode =>
         {
-            _errorMessages.TryGetValue(errorCode.Code, out string? message);
+            _errorMessages.TryGetValue(errorCode.Code, out var message);
             return $"| {errorCode.Code} | {errorCode.Name} | {message ?? string.Empty} |";
         });
 

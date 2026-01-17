@@ -6,12 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Infrastructure.Services.StorageHealthCheck.Config;
 
 /// <summary>
-/// Configuration module for storage health check service dependency injection registration.
+///     Configuration module for storage health check service dependency injection registration.
 /// </summary>
 public class StorageHealthCheckServiceModuleRegistry : IModuleConfiguration
 {
     /// <summary>
-    /// Registers storage health check service dependencies into the service collection.
+    ///     Registers storage health check service dependencies into the service collection.
     /// </summary>
     /// <param name="services">The service collection to register services into.</param>
     /// <returns>The service collection for method chaining.</returns>

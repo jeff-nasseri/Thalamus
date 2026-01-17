@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Http;
 namespace Thalamus.Web.Swagger;
 
 /// <summary>
-/// Middleware that provides basic authentication for Swagger endpoints.
+///     Middleware that provides basic authentication for Swagger endpoints.
 /// </summary>
 public class SwaggerBasicAuthMiddleware
 {
-    private readonly RequestDelegate _next;
-    private readonly string? _expectedUsername;
     private readonly string? _expectedPassword;
+    private readonly string? _expectedUsername;
+    private readonly RequestDelegate _next;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SwaggerBasicAuthMiddleware"/> class.
+    ///     Initializes a new instance of the <see cref="SwaggerBasicAuthMiddleware" /> class.
     /// </summary>
     /// <param name="next">The next middleware in the pipeline.</param>
     /// <param name="expectedUsername">Expected username for authentication.</param>
@@ -28,7 +28,7 @@ public class SwaggerBasicAuthMiddleware
     }
 
     /// <summary>
-    /// Invokes the middleware to validate basic authentication credentials.
+    ///     Invokes the middleware to validate basic authentication credentials.
     /// </summary>
     /// <param name="context">The HTTP context for the current request.</param>
     public async Task InvokeAsync(HttpContext context)
@@ -38,11 +38,11 @@ public class SwaggerBasicAuthMiddleware
         if (authHeader != null && authHeader.StartsWith("Basic "))
         {
             // Get the credentials from request header
-            AuthenticationHeaderValue header = AuthenticationHeaderValue.Parse(authHeader);
-            byte[] inBytes = Convert.FromBase64String(header.Parameter!);
+            var header = AuthenticationHeaderValue.Parse(authHeader);
+            var inBytes = Convert.FromBase64String(header.Parameter!);
             string[] credentials = Encoding.UTF8.GetString(inBytes).Split(':');
-            string username = credentials[0];
-            string password = credentials[1];
+            var username = credentials[0];
+            var password = credentials[1];
 
             // validate credentials
             if (username.Equals(_expectedUsername) && password.Equals(_expectedPassword))

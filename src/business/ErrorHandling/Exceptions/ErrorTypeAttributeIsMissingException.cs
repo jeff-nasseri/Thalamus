@@ -4,13 +4,13 @@ using ErrorHandling.Attributes;
 namespace ErrorHandling.Exceptions;
 
 /// <summary>
-/// Exception thrown when an error code enum field is missing the required <see cref="ErrorTypeAttribute" />.
+///     Exception thrown when an error code enum field is missing the required <see cref="ErrorTypeAttribute" />.
 /// </summary>
 [Serializable]
 public class ErrorTypeAttributeIsMissingException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ErrorTypeAttributeIsMissingException"/> class.
+    ///     Initializes a new instance of the <see cref="ErrorTypeAttributeIsMissingException" /> class.
     /// </summary>
     /// <param name="enumValue">The enum value that is missing the attribute.</param>
     public ErrorTypeAttributeIsMissingException(Enum enumValue)
@@ -20,10 +20,10 @@ public class ErrorTypeAttributeIsMissingException : Exception
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ErrorTypeAttributeIsMissingException"/> class with serialized data.
+    ///     Initializes a new instance of the <see cref="ErrorTypeAttributeIsMissingException" /> class with serialized data.
     /// </summary>
-    /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data.</param>
-    /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information.</param>
+    /// <param name="info">The <see cref="SerializationInfo" /> that holds the serialized object data.</param>
+    /// <param name="context">The <see cref="StreamingContext" /> that contains contextual information.</param>
     protected ErrorTypeAttributeIsMissingException(
         SerializationInfo info,
         StreamingContext context)

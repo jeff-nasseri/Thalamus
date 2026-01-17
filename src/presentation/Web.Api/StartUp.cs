@@ -1,19 +1,19 @@
 ﻿using Application;
 using AutoMapper.Internal;
+using Serilog;
 using Thalamus.Web.Extensions;
 using Thalamus.Web.Middlewares;
 using Thalamus.Web.Swagger.Extensions;
-using Serilog;
 
 namespace Web.Api;
 
 /// <summary>
-/// Startup class responsible for configuring services and the application request pipeline.
+///     Startup class responsible for configuring services and the application request pipeline.
 /// </summary>
 public class Startup
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Startup"/> class.
+    ///     Initializes a new instance of the <see cref="Startup" /> class.
     /// </summary>
     /// <param name="configuration">Application configuration.</param>
     public Startup(IConfiguration configuration)
@@ -22,12 +22,12 @@ public class Startup
     }
 
     /// <summary>
-    /// Gets the application configuration.
+    ///     Gets the application configuration.
     /// </summary>
     private IConfiguration Configuration { get; }
 
     /// <summary>
-    /// Configures application services. This method is called by the runtime.
+    ///     Configures application services. This method is called by the runtime.
     /// </summary>
     /// <param name="services">Service collection to configure.</param>
     public void ConfigureServices(IServiceCollection services)
@@ -57,7 +57,7 @@ public class Startup
     }
 
     /// <summary>
-    /// Configures the HTTP request pipeline. This method is called by the runtime.
+    ///     Configures the HTTP request pipeline. This method is called by the runtime.
     /// </summary>
     /// <param name="app">Application builder to configure.</param>
     /// <param name="env">Web host environment information.</param>

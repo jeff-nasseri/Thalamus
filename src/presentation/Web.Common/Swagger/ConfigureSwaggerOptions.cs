@@ -1,16 +1,16 @@
-using Thalamus.Web.Swagger.Filters;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Thalamus.Web.Swagger.Filters;
 using Unchase.Swashbuckle.AspNetCore.Extensions.Extensions;
 
 namespace Thalamus.Web.Swagger;
 
 /// <summary>
-/// Configures Swagger generation options for the application.
+///     Configures Swagger generation options for the application.
 /// </summary>
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
@@ -18,7 +18,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     private readonly IConfiguration _configuration;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigureSwaggerOptions"/> class.
+    ///     Initializes a new instance of the <see cref="ConfigureSwaggerOptions" /> class.
     /// </summary>
     /// <param name="configuration">Application configuration.</param>
     /// <param name="apiDescriptionGroupCollectionProvider">Provider for API description groups.</param>
@@ -31,16 +31,14 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     }
 
     /// <summary>
-    /// Configures Swagger generation options including versioning, filters, and schema mappings.
+    ///     Configures Swagger generation options including versioning, filters, and schema mappings.
     /// </summary>
     /// <param name="options">Swagger generation options to configure.</param>
     public void Configure(SwaggerGenOptions options)
     {
-        foreach (ApiDescriptionGroup? apiDescriptionGroup in _apiDescriptionGroupCollectionProvider.ApiDescriptionGroups
+        foreach (var apiDescriptionGroup in _apiDescriptionGroupCollectionProvider.ApiDescriptionGroups
                      .Items)
-        {
             options.SwaggerDoc(apiDescriptionGroup.GroupName, CreateVersionInfo(apiDescriptionGroup.Items.First()));
-        }
 
         options.EnableAnnotations();
 
@@ -54,13 +52,13 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     }
 
     /// <summary>
-    /// Creates OpenAPI version information for a specific API description.
+    ///     Creates OpenAPI version information for a specific API description.
     /// </summary>
     /// <param name="description">The API description to create version info for.</param>
     /// <returns>OpenAPI version information including title and deprecation status.</returns>
     private OpenApiInfo CreateVersionInfo(ApiDescription description)
     {
-        string appName = _configuration.GetValue<string>("AppName")! ?? "Payment";
+        var appName = _configuration.GetValue<string>("AppName")! ?? "Payment";
 
         OpenApiInfo info = new()
         {
@@ -68,10 +66,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
             Version = description.GetApiVersion().ToString()
         };
 
-        if (description.IsDeprecated())
-        {
-            info.Description += " This API version has been deprecated.";
-        }
+        if (description.IsDeprecated()) info.Description += " This API version has been deprecated.";
 
         return info;
     }

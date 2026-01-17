@@ -4,13 +4,18 @@ using Application.Common.Factories.Agent;
 namespace Infrastructure.Services;
 
 /// <summary>
-/// Factory implementation for creating Thalamus-specific agents.
-/// Extends the base AgentFactory with Thalamus platform capabilities.
+///     Factory implementation for creating Thalamus-specific agents.
+///     Extends the base AgentFactory with Thalamus platform capabilities.
 /// </summary>
 public abstract class ThalamusAgentFactory : AgentFactory, IAgentFactory
 {
     /// <summary>
-    /// Creates a new Thalamus agent asynchronously based on the provided configuration.
+    ///     Gets the factory tag identifier.
+    /// </summary>
+    public string Tag => nameof(ThalamusAgentFactory);
+
+    /// <summary>
+    ///     Creates a new Thalamus agent asynchronously based on the provided configuration.
     /// </summary>
     /// <param name="dto">The agent installation configuration containing setup parameters.</param>
     /// <param name="token">Cancellation token to cancel the operation.</param>
@@ -20,9 +25,4 @@ public abstract class ThalamusAgentFactory : AgentFactory, IAgentFactory
     {
         throw new NotImplementedException();
     }
-
-    /// <summary>
-    /// Gets the factory tag identifier.
-    /// </summary>
-    public string Tag => nameof(ThalamusAgentFactory);
 }
