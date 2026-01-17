@@ -1,0 +1,100 @@
+# Thalamus CLI - Idempotent Configuration Initialization
+
+## Objective
+Implement an idempotent configuration initialization system that reads JSON configuration files, deserializes them into domain entities, and persists them using the repository pattern.
+
+---
+
+## Project Structure
+
+### Configuration Files
+Located at: `Thalamus\src\presentation\Thalamus.Cli\`
+- `agent-pool.json`
+- `mcp-pool.json`
+- `node-pool.json`
+
+### Key Directories
+- **Domain Entities**: `B:\root\ops\Thalamus\src\business\Domain\Entities`
+- **Application Layer**: `B:\root\ops\Thalamus\src\business\Application\`
+  - Business Handlers: `Application\Business\(Agent|Mcp|Node)\`
+  - Storage Repositories: `Application\Storage\`
+- **Infrastructure Layer**: `B:\root\ops\Thalamus\src\data-access\Infrastructure\Services\Cli`
+
+---
+
+## Data Flow
+
+```
+JSON Files → CLI Service → DTOs → MediatR Request → Handler → Repository → Database
+```
+
+### Detailed Flow
+
+1. **`IdempotentConfigurationInitializationAsync`** (Infrastructure/CLI Service)
+   - Reads JSON files based on incoming CLI arguments
+   - Deserializes JSON into DTOs (e.g., `AgentDto`, `McpDto`, `NodeDto`)
+   - Sends DTOs to Application layer via MediatR requests
+
+2. **Request Handlers** (Application/Business/{Agent|Mcp|Node})
+   - Receives MediatR request containing DTO
+   - Maps DTO to Domain Entity using AutoMapper
+   - Injects appropriate repository from `Application\Storage`
+   - Executes idempotent insert operation
+
+---
+
+## Requirements & Constraints
+
+### Must Do ✅
+1. **Create DTOs**: Define `record AgentDto`, `record McpDto`, `record NodeDto` based on domain entities
+2. **AutoMapper Configuration**: Create configuration classes in `Application\Business\{Agent|Mcp|Node}\Configuration\`
+   - Use existing `AgentModuleConfiguration` as reference
+   - Create new configurations for Mcp and Node
+3. **Repository Usage**: Only use repositories within business handlers (Application layer)
+4. **Idempotent Operations**: Use create/upsert repositories only (no delete needed)
+5. **JSON Alignment**: Revise JSON files to match DTO structure
+
+### Must Not Do ❌
+1. **Do NOT** modify anything in the Presentation folder
+2. **Do NOT** use repository signatures outside of business handlers
+
+---
+
+## Implementation Steps
+
+### Phase 1: Analysis
+1. Review existing domain entities at `Domain\Entities\`
+2. Examine current `AgentModuleConfiguration` implementation
+3. Analyze repository interfaces in `Application\Storage\`
+4. Understand existing business handler patterns
+5. Check other relative files which you think could be userful to check
+
+### Phase 2: Create DTOs
+1. Create `AgentDto` record based on Agent entity
+2. Create `McpDto` record based on Mcp entity  
+3. Create `NodeDto` record based on Node entity, and put all of the dtos 'src\business\Application\Common\Dtos' 
+4. Revise JSON files to align with DTO structures
+
+### Phase 3: AutoMapper Configuration
+1. Implement mapping in `Application\Business\Agent\Configuration\AgentModuleConfiguration`
+2. Create `Application\Business\Mcp\Configuration\McpModuleConfiguration`
+3. Create `Application\Business\Node\Configuration\NodeModuleConfiguration`
+
+### Phase 4: Handlers & Repositories
+1. Create/update MediatR request handlers for each type
+2. Inject appropriate storage repositories (Create/Upsert)
+3. Implement idempotent insert logic
+
+### Phase 5: CLI Integration
+1. Update `IdempotentConfigurationInitializationAsync` in Infrastructure/Services/Cli
+2. Implement JSON deserialization to DTOs
+3. Send MediatR requests with DTOs to Application layer
+
+---
+
+## Notes
+- This is an **idempotent creation** - focus on create/upsert operations only
+- DTOs are used at the Infrastructure layer for serialization
+- Entity mapping happens at the Application layer using AutoMapper
+- Follow the existing `AgentModuleConfiguration` pattern for consistency
+- You may have to update the input argument of the Request models in the business folder
