@@ -136,7 +136,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
         newResponseSchema.Properties["error"] = errorSchema;
         var schemaKey = Regex.Replace(requestName, "Request$", "Response");
 
-        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var _))
+        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out _))
             return new OpenApiSchema
             {
                 Reference = new OpenApiReference { Type = ReferenceType.Schema, Id = schemaKey }
@@ -165,7 +165,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
         complexResponseSchema.Properties["error"] = errorSchema;
         var schemaKey = Regex.Replace(requestName, "Request$", "Response");
 
-        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var _))
+        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out _))
             return new OpenApiSchema
             {
                 Reference = new OpenApiReference { Type = ReferenceType.Schema, Id = schemaKey }
@@ -197,7 +197,7 @@ public class ErrorCodeOperationFilter : IOperationFilter
             _useAllOfToExtendReferenceSchemas ? WrapWithAllOfSchemaType(errorCodesEnumSchema) : errorCodesEnumSchema;
         var schemaKey = Regex.Replace(requestName, "Request$", "Error");
 
-        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var _))
+        if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out _))
             return new OpenApiSchema
             {
                 Reference = new OpenApiReference { Type = ReferenceType.Schema, Id = schemaKey }

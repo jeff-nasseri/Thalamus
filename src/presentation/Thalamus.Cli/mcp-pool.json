@@ -1,0 +1,86 @@
+﻿{
+  "plugins": [
+    {
+      "title": "IO MCP",
+      "code": "io-mcp-v1",
+      "description": "File system operations and data management",
+      "enabled": true,
+      "platform": "docker",
+      "imageName": "thalamus/io-mcp:latest",
+      "containerName": "io-mcp-production",
+      "restartPolicy": "unless-stopped",
+      "environment": {
+        "MAX_FILE_SIZE": "100MB",
+        "ALLOWED_PATHS": "/app/data",
+        "LOG_LEVEL": "info",
+        "ENABLE_MONITORING": "true"
+      },
+      "ports": [
+        "8080:8080"
+      ],
+      "volumes": [
+        "/data:/app/data",
+        "/logs:/app/logs"
+      ],
+      "networks": [
+        "thalamus-network"
+      ],
+      "configuration": {
+        "health_check": {
+          "test": [
+            "CMD",
+            "curl",
+            "-f",
+            "http://localhost:8080/health"
+          ],
+          "interval": "30s",
+          "timeout": "10s",
+          "retries": 3
+        }
+      }
+    },
+    {
+      "title": "MikroTik Network MCP",
+      "code": "mikrotik-mcp-v1",
+      "description": "MikroTik router management and network automation",
+      "enabled": true,
+      "platform": "docker",
+      "imageName": "thalamus/mikrotik-mcp:latest",
+      "containerName": "mikrotik-mcp-production",
+      "restartPolicy": "unless-stopped",
+      "environment": {
+        "MIKROTIK_HOST": "192.168.88.1",
+        "MIKROTIK_PORT": "8728",
+        "MIKROTIK_USER": "admin",
+        "MIKROTIK_PASSWORD": "your_password_here",
+        "ENABLE_SSL": "true",
+        "CONNECTION_TIMEOUT": "10",
+        "AUTO_RECONNECT": "true",
+        "LOG_LEVEL": "info"
+      },
+      "ports": [
+        "8086:8086"
+      ],
+      "volumes": [],
+      "networks": [
+        "thalamus-network"
+      ],
+      "configuration": {
+        "cap_add": [
+          "NET_ADMIN"
+        ],
+        "health_check": {
+          "test": [
+            "CMD",
+            "curl",
+            "-f",
+            "http://localhost:8086/health"
+          ],
+          "interval": "30s",
+          "timeout": "10s",
+          "retries": 3
+        }
+      }
+    }
+  ]
+}
