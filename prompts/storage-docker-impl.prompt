@@ -1,0 +1,39 @@
+﻿Based on the entities in "src/business/Domain/Entities", related value objects in "src/business/Domain/ValueObjects", and enums/base types in "src/business/Domain/Domain.csproj", I need to set up a MongoDB infrastructure with the following requirements:
+
+## Docker Compose Setup
+
+**Location**: `infra/platform/storage/docker/docker-compose.yml`
+
+**Requirements**:
+1. Linux-based MongoDB instance
+2. Mongo Express web dashboard for database management
+3. Health check configuration for MongoDB availability
+4. Auto-initialization using scripts from `infra/platform/storage/docker/scripts/`
+
+## Environment Configuration
+
+Create two files at `infra/platform/storage/docker/`:
+- `.env.template` - Template with placeholder values (committed to git)
+- `.env` - Actual values (added to .gitignore)
+
+## Initialization Scripts
+
+Create in `infra/platform/storage/docker/scripts/`:
+
+1. **Database initialization script**: Set up database and collections based on the domain entities
+2. **Indexing script**: Create indexes on query fields for the following high-volume collections:
+   - Memory
+   - Thread
+   - Prompts
+   - Plans
+
+These four collections will contain large datasets and require optimized query performance through proper indexing.
+
+## Expected Behavior
+
+When `docker compose up` runs:
+1. MongoDB container starts
+2. Scripts execute automatically to initialize database structure
+3. Indexes are created for the specified collections
+4. Mongo Express becomes available for database management
+5. Health check confirms MongoDB is ready
