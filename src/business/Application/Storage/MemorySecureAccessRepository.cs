@@ -3,8 +3,6 @@ using ErrorHandling;
 
 namespace Application.Storage;
 
-#region Memory Repository Implementation
-
 /// <summary>
 ///     Internal implementation of secure memory access repository.
 ///     Provides controlled access to memory storage with query and command execution capabilities.
@@ -49,5 +47,3 @@ internal class MemorySecureAccessRepository : IMemorySecureAccessRepository
         throw new NotImplementedException();
     }
 }
-
-#endregion

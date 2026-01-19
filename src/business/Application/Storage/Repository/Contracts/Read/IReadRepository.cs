@@ -31,18 +31,12 @@ public interface IReadRepository<TEntity, in TId>
     where TId : struct
     where TEntity : BaseEntity<TId>
 {
-    #region Health Check
-
     /// <summary>
     ///     Health check for database connectivity.
     ///     Tests if the repository can successfully connect to the underlying data store.
     /// </summary>
     /// <returns>True if connection is successful; otherwise, false.</returns>
     bool TryConnect();
-
-    #endregion
-
-    #region First - Get the first entity
 
     /// <summary>
     ///     Retrieves the first entity from the data store, optionally including related entities.
@@ -124,10 +118,6 @@ public interface IReadRepository<TEntity, in TId>
         , Expression<Func<TEntity, bool>> search
         , bool track = true
         , bool exceptionRaiseIfNotExist = false);
-
-    #endregion
-
-    #region Get - Retrieve a specific entity
 
     /// <summary>
     ///     Retrieves an entity by its identifier, including related entities.
@@ -228,10 +218,6 @@ public interface IReadRepository<TEntity, in TId>
         , bool track = true
         , bool exceptionRaiseIfNotExist = false);
 
-    #endregion
-
-    #region GetAll - Retrieve all entities
-
     /// <summary>
     ///     Retrieves all entities from the data store, including related entities, with optional ordering and pagination.
     /// </summary>
@@ -288,10 +274,6 @@ public interface IReadRepository<TEntity, in TId>
         , Func<TEntity, TKey> orderBy = null
         , bool track = false);
 
-    #endregion
-
-    #region GetByIds - Retrieve entities by multiple identifiers
-
     /// <summary>
     ///     Retrieves entities by their identifiers, including related entities, with optional ordering and pagination.
     /// </summary>
@@ -339,10 +321,6 @@ public interface IReadRepository<TEntity, in TId>
         , int? page = null
         , Func<TEntity, TKey> orderBy = null
         , bool track = false);
-
-    #endregion
-
-    #region Where - Filter entities by condition
 
     /// <summary>
     ///     Retrieves entities matching the search condition, including related entities, with optional ordering and
@@ -393,10 +371,6 @@ public interface IReadRepository<TEntity, in TId>
         , Func<TEntity, TKey> orderBy = null
         , bool track = false);
 
-    #endregion
-
-    #region Count - Count entities
-
     /// <summary>
     ///     Counts entities matching the condition, including related entities via navigation property.
     /// </summary>
@@ -425,6 +399,4 @@ public interface IReadRepository<TEntity, in TId>
     /// </summary>
     /// <returns>The total number of entities.</returns>
     Task<int> Count();
-
-    #endregion
 }
