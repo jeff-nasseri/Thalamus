@@ -87,9 +87,20 @@ The API will be available at `https://localhost:5001` (or configured port).
 
 ### Running the CLI
 
+The Thalamus CLI provides a rich command-line interface for managing configuration, executing prompts, and accessing memory.
+
 ```bash
-dotnet run --project src/presentation/Thalamus.Cli
+# Run the CLI
+dotnet run --project src/presentation/Thalamus.Cli -- [command] [options]
+
+# Examples:
+dotnet run --project src/presentation/Thalamus.Cli -- configuration --initialization --node
+dotnet run --project src/presentation/Thalamus.Cli -- prompt -m "Hello agent"
+dotnet run --project src/presentation/Thalamus.Cli -- memory --keywords important
+dotnet run --project src/presentation/Thalamus.Cli -- dashboard --url localhost:8080
 ```
+
+For detailed CLI documentation, see [Thalamus CLI README](src/presentation/Thalamus.Cli/README.md).
 
 ## Development
 

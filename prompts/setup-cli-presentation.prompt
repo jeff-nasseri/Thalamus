@@ -1,0 +1,12 @@
+﻿**Goal**: Set up a CLI application using Spectre.Console in the Thalamus.Cli project
+
+**Context**:
+- CLI structure is defined at: `src/presentation/Thalamus.Cli/thalamus-cli-structure.json`
+- Related CLI services are located at: `src/data-access/Infrastructure/Services/Cli`
+- Service interfaces are available in the Thalamus.Cli project
+
+**Tasks**:
+1. Implement the CLI using Spectre.Console library (add via NuGet)
+2. Wire up the nested commands and arguments based on the JSON configuration
+3. Integrate the existing CLI services from Infrastructure layer
+4. Create a README.md at the project root documenting CLI usage

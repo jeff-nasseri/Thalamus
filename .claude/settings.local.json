@@ -9,7 +9,11 @@
       "Bash(done)",
       "Bash(dotnet build:*)",
       "Bash(Select-String -Pattern \"error|Build succeeded|Build FAILED\")",
-      "Bash(Select-Object -Last 20)"
+      "Bash(Select-Object -Last 20)",
+      "Bash(dotnet add:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet run:*)",
+      "Bash(dotnet remove package:*)"
     ]
   }
 }
