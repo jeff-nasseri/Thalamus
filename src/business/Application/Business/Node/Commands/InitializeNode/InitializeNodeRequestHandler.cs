@@ -38,7 +38,14 @@ public class InitializeNodeRequestHandler : IRequestHandler<InitializeNodeReques
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
+    /// <summary>
+    ///     Gets or sets the current handler request being processed.
+    /// </summary>
     public required InitializeNodeRequest HandlerRequest { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the collection of mapped node entities.
+    /// </summary>
     public IEnumerable<AgentNode>? MappedNodes { get; set; }
 
     /// <summary>
@@ -59,6 +66,10 @@ public class InitializeNodeRequestHandler : IRequestHandler<InitializeNodeReques
         return MapNodesToResponse();
     }
 
+    /// <summary>
+    ///     Maps node DTOs to domain entities using AutoMapper.
+    /// </summary>
+    /// <returns>A response indicating success or failure of the mapping operation.</returns>
     private async Task<Response> MapNodesFromDtos()
     {
         try
@@ -92,6 +103,10 @@ public class InitializeNodeRequestHandler : IRequestHandler<InitializeNodeReques
         }
     }
 
+    /// <summary>
+    ///     Inserts the mapped node entities into the repository.
+    /// </summary>
+    /// <returns>A response indicating success or failure of the insertion operation.</returns>
     private async Task<Response> InsertNodesToRepository()
     {
         try
@@ -118,6 +133,10 @@ public class InitializeNodeRequestHandler : IRequestHandler<InitializeNodeReques
         }
     }
 
+    /// <summary>
+    ///     Maps the domain node entities back to DTOs for the response.
+    /// </summary>
+    /// <returns>A response containing the collection of node DTOs.</returns>
     private Response<IEnumerable<NodeDto>> MapNodesToResponse()
     {
         try
