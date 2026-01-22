@@ -37,7 +37,14 @@ public class InitializeAgentsRequestHandler : IRequestHandler<InitializeAgentsRe
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
+    /// <summary>
+    ///     Gets or sets the current handler request being processed.
+    /// </summary>
     public required InitializeAgentsRequest HandlerRequest { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the collection of mapped agent entities.
+    /// </summary>
     public IEnumerable<Domain.Entities.Agent>? MappedAgents { get; set; }
 
     /// <summary>
@@ -58,6 +65,10 @@ public class InitializeAgentsRequestHandler : IRequestHandler<InitializeAgentsRe
         return MapAgentsToResponse();
     }
 
+    /// <summary>
+    ///     Maps agent DTOs to domain entities using AutoMapper.
+    /// </summary>
+    /// <returns>A response indicating success or failure of the mapping operation.</returns>
     private async Task<Response> MapAgentsFromDtos()
     {
         try
@@ -91,6 +102,10 @@ public class InitializeAgentsRequestHandler : IRequestHandler<InitializeAgentsRe
         }
     }
 
+    /// <summary>
+    ///     Inserts the mapped agent entities into the repository.
+    /// </summary>
+    /// <returns>A response indicating success or failure of the insertion operation.</returns>
     private async Task<Response> InsertAgentsToRepository()
     {
         try
@@ -117,6 +132,10 @@ public class InitializeAgentsRequestHandler : IRequestHandler<InitializeAgentsRe
         }
     }
 
+    /// <summary>
+    ///     Maps the domain agent entities back to DTOs for the response.
+    /// </summary>
+    /// <returns>A response containing the collection of agent DTOs.</returns>
     private Response<IEnumerable<AgentDto>> MapAgentsToResponse()
     {
         try

@@ -38,7 +38,14 @@ public class InitializeMcpRequestHandler : IRequestHandler<InitializeMcpRequest,
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
+    /// <summary>
+    ///     Gets or sets the current handler request being processed.
+    /// </summary>
     public required InitializeMcpRequest HandlerRequest { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the collection of mapped MCP plugin entities.
+    /// </summary>
     public IEnumerable<McpPlugin>? MappedPlugins { get; set; }
 
     /// <summary>
@@ -59,6 +66,10 @@ public class InitializeMcpRequestHandler : IRequestHandler<InitializeMcpRequest,
         return MapPluginsToResponse();
     }
 
+    /// <summary>
+    ///     Maps MCP plugin DTOs to domain entities using AutoMapper.
+    /// </summary>
+    /// <returns>A response indicating success or failure of the mapping operation.</returns>
     private async Task<Response> MapPluginsFromDtos()
     {
         try
@@ -92,6 +103,10 @@ public class InitializeMcpRequestHandler : IRequestHandler<InitializeMcpRequest,
         }
     }
 
+    /// <summary>
+    ///     Inserts the mapped MCP plugin entities into the repository.
+    /// </summary>
+    /// <returns>A response indicating success or failure of the insertion operation.</returns>
     private async Task<Response> InsertPluginsToRepository()
     {
         try
@@ -118,6 +133,10 @@ public class InitializeMcpRequestHandler : IRequestHandler<InitializeMcpRequest,
         }
     }
 
+    /// <summary>
+    ///     Maps the domain MCP plugin entities back to DTOs for the response.
+    /// </summary>
+    /// <returns>A response containing the collection of MCP plugin DTOs.</returns>
     private Response<IEnumerable<McpPluginDto>> MapPluginsToResponse()
     {
         try
