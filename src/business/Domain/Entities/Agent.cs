@@ -6,7 +6,7 @@ namespace Domain.Entities;
 ///     Represents an agent in the Thalamus system.
 ///     Agents execute plans and maintain their own memory of conversations and executions.
 /// </summary>
-public class Agent : BaseEntity
+public class Agent : BaseEntity, IActorAggregateRoot
 {
     /// <summary>
     ///     Gets or sets the name of the agent.
@@ -29,4 +29,11 @@ public class Agent : BaseEntity
     ///     Gets or sets the current operational status of the agent.
     /// </summary>
     public AgentStatus Status { get; set; }
+}
+
+/// <summary>
+///     Representing Dapr actor aggregate root
+/// </summary>
+public interface IActorAggregateRoot : IAggregateRoot
+{
 }
